@@ -19,6 +19,7 @@ vendor.display.disable_metadata_dynamic_fps=1
 
 # LMKD
 ro.config.low_ram=false
+ro.lmk.log_stats=false
 
 # Incremental FS
 ro.incremental.enable=1
