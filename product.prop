@@ -21,6 +21,7 @@ vendor.display.disable_metadata_dynamic_fps=1
 ro.config.low_ram=false
 ro.lmk.log_stats=false
 ro.lmk.kill_heaviest_task=true
+ro.lmk.swap_free_low_percentage=100
 
 # Incremental FS
 ro.incremental.enable=1
