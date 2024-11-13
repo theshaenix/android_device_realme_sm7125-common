@@ -167,6 +167,9 @@ debug.sf.enable_gl_backpressure=0
 # Keystore
 ro.hardware.keystore_desede=true
 
+# Game FrameRate
+debug.graphics.game_default_frame_rate.disabled=true
+
 # Media
 debug.media.codec2=2
 debug.stagefright.c2inputsurface=-1
