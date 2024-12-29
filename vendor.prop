@@ -152,6 +152,9 @@ ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
 # FM
 vendor.hw.fm.init=0
 
+# FUSE passthrough
+persist.sys.fuse.passthrough.enable=true
+
 #Graphics
 debug.hwui.use_hint_manager=true
 debug.hwui.target_cpu_time_percent=30
