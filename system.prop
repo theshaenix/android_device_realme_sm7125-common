@@ -24,6 +24,10 @@ persist.vendor.camera.light_ae.enable=1
 persist.vendor.camera.oissr.debug=1
 vendor.debug.camera.eisv2enable=1
 vendor.debug.camera.eisv3enable=1
+# Allow privileged camera apps
+persist.vendor.camera.privapp.list=com.android.camera,com.google.camera,org.lineageos.aperture
+# Allow aux cameras
+vendor.camera.aux.packagelist=com.android.camera,com.google.camera,org.lineageos.aperture
 
 # CNE
 persist.vendor.cne.feature=1
