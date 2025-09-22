@@ -19,6 +19,9 @@
 # Cust
 /dev/block/platform/soc/4744000.sdhci/by-name/cust                                                       u:object_r:vendor_custom_block_device:s0
 
+# Charging Bypass
+/sys/class/power_supply/battery/batt_slate_mode              u:object_r:sysfs_battery_writable:s0
+
 # Oppo Partitions
 /dev/block/platform/soc/1d84000.ufshc/by-name/oppodycnvbk                                                u:object_r:vendor_modem_efs_partition_device:s0
 /dev/block/platform/soc/1d84000.ufshc/by-name/oppostanvbk                                                u:object_r:vendor_modem_efs_partition_device:s0
