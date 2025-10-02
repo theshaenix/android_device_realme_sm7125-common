@@ -1,3 +1,6 @@
+type devicesettings_app, domain;
+app_domain(devicesettings_app)
+
 # Allow charging bypass to overwrite
 allow devicesettings_app sysfs_battery_writable:dir r_dir_perms;
 allow devicesettings_app sysfs_battery_writable:file { open read write getattr ioctl };
