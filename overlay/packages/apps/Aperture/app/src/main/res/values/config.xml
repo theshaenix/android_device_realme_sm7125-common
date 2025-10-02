@@ -17,4 +17,7 @@
     <!-- <string-array name="config_backwardCompatibleCameraIds">
         <item>30</item>
     </string-array> -->
+    
+    <!-- New flag to allow aperture in aux package allowlist -->
+    <bool name="config_cameraAuxPackageAllowlist">true</bool>
 </resources>
