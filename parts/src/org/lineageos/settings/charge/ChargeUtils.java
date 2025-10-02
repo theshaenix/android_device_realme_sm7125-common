@@ -31,7 +31,7 @@ public class ChargeUtils {
     private static final String TAG = "ChargeUtils";
     
     // Sysfs node for bypass control
-    public static final String BYPASS_CHARGE_NODE = "/sys/class/power_supply/battery/batt_slate_mode";
+    public static final String BYPASS_CHARGE_NODE = "/sys/class/power_supply/battery/input_suspend";
     
     // Bypass modes
     public static final int MODE_MANUAL = 0;

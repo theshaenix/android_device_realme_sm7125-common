@@ -23,7 +23,7 @@
     <dimen name="status_bar_padding_end">16px</dimen>
 
    <!-- the padding on the top of the statusbar -->
-    <dimen name="status_bar_padding_top">8dp</dimen>
+    <dimen name="status_bar_padding_top">4dp</dimen>
 
     <!-- Starting padding for a left-aligned status bar clock -->
     <dimen name="status_bar_left_clock_starting_padding">6px</dimen>
@@ -54,11 +54,7 @@
      -->
     <integer name="keyguard_max_notification_count_ambient_play">2</integer>
 
-    <!-- Bottom margin size when fingerprint in display is active -->
-    <dimen name="keyguard_indication_margin_bottom_fingerprint_in_display">116dp</dimen>
-
     <!-- Location on the screen of the center of the physical power button. -->
     <dimen name="physical_power_button_center_screen_location_y">912px</dimen>
-    <dimen name="physical_fingerprint_sensor_center_screen_location_y">912px</dimen>
 
 </resources>

@@ -6,3 +6,7 @@ get_prop(vendor_qti_init_shell, oppo_debug_prop)
 allow vendor_qti_init_shell sysfs:file write;
 
 allow vendor_qti_init_shell proc_page_cluster:file { open };
+
+
+# To set powerhal init property
+set_prop(vendor_qti_init_shell, vendor_power_prop)

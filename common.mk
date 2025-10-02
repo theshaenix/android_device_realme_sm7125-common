@@ -161,6 +161,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 SYSTEM_OPTIMIZE_JAVA := true
 SYSTEMUI_OPTIMIZE_JAVA := true
 
+# EPPE
+TARGET_DISABLE_EPPE := true
+
 # Fastbootd
 PRODUCT_PACKAGES += \
     fastbootd
@@ -276,9 +279,11 @@ PRODUCT_PACKAGES += \
 #Lawnchair
 $(call inherit-product-if-exists, vendor/lawnchair/lawnchair.mk)
 
-# LiveDisplay
+#LiveDisplay
 PRODUCT_PACKAGES += \
-    vendor.lineage.livedisplay@2.0-service-sdm
+    vendor.lineage.livedisplay-service.sdm
+
+$(call soong_config_set,livedisplay_sdm,enable_dm,false)
 
 # Media
 PRODUCT_PACKAGES += \
@@ -388,7 +393,8 @@ PRODUCT_PACKAGES += \
 
 # Sensors
 PRODUCT_PACKAGES += \
-    android.hardware.sensors@2.0-service.multihal_realme_sm7125
+    android.hardware.sensors@2.1-service.multihal_realme_sm7125 \
+    android.hardware.sensors@2.0-ScopedWakelock.vendor 
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
@@ -406,6 +412,9 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.servicetracker@1.0.vendor \
     vendor.qti.hardware.servicetracker@1.1.vendor \
     vendor.qti.hardware.servicetracker@1.2.vendor
+
+# Disable Scudo to save RAM.
+PRODUCT_DISABLE_SCUDO := true
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
@@ -481,6 +490,9 @@ PRODUCT_COPY_FILES += \
 # Vibrator
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.vibrator.service
+
+PRODUCT_COPY_FILES += \
+    vendor/qcom/opensource/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
 
 PRODUCT_COPY_FILES += \
     prebuilts/vndk/v30/arm64/arch-arm64-armv8-a/shared/vndk-core/libgui.so:$(TARGET_COPY_OUT_SYSTEM)/lib64/libxxx.so \
@@ -594,7 +606,7 @@ PRODUCT_PACKAGES += \
     android.hardware.cas@1.0.vendor \
     android.hardware.cas@1.1.vendor \
     android.hardware.cas@1.2.vendor \
-    android.hardware.common-V1-ndk_platform.vendor \
+    android.hardware.common-V1-ndk \
     android.hardware.confirmationui@1.0.vendor \
     android.hardware.contexthub@1.0.vendor \
     android.hardware.contexthub@1.1.vendor \
@@ -609,7 +621,7 @@ PRODUCT_PACKAGES += \
     android.hardware.gnss@1.1.vendor \
     android.hardware.gnss@2.0.vendor \
     android.hardware.gnss@2.1.vendor \
-    android.hardware.graphics.common-V1-ndk_platform.vendor \
+    android.hardware.graphics.common-V1-ndk \
     android.hardware.graphics.composer@2.1.vendor \
     android.hardware.graphics.composer@2.2.vendor \
     android.hardware.graphics.composer@2.3.vendor \

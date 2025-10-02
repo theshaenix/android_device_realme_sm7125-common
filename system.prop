@@ -21,11 +21,13 @@ ro.camera.attr.detect.enable=1
 ro.camera.notify_nfc=1
 ro.camera.temperature.limit=470
 persist.vendor.camera.light_ae.enable=1
-persist.camera.eis.enable=1
-persist.camera.is_mode=4
 persist.vendor.camera.oissr.debug=1
 vendor.debug.camera.eisv2enable=1
 vendor.debug.camera.eisv3enable=1
+# Allow privileged camera apps
+persist.vendor.camera.privapp.list=com.android.camera,com.google.camera,org.lineageos.aperture
+# Allow aux cameras
+vendor.camera.aux.packagelist=com.android.camera,com.google.camera,org.lineageos.aperture
 
 # CNE
 persist.vendor.cne.feature=1

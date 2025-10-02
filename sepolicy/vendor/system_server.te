@@ -1,0 +1,4 @@
+allow system_server proc_devinfo:dir search;
+allow system_server proc_oppo_rf:dir search;
+allow system_server proc_oppoversion:dir search;
+allow system_server proc_touchpanel:dir search;

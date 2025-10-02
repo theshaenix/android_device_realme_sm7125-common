@@ -13,6 +13,9 @@ type proc_oppo_fp, fs_type, proc_type;
 # Camera
 type vendor_persist_camera_file, file_type;
 
+# Bypass Charging
+type sysfs_battery_writable, sysfs_type, fs_type;
+
 # Devinfo
 type proc_devinfo, fs_type, proc_type;
 
