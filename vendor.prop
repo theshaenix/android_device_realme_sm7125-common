@@ -151,9 +151,6 @@ ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
 # FM
 vendor.hw.fm.init=0
 
-# FRP
-ro.frp.pst=/dev/block/bootdevice/by-name/frp
-
 #Graphics
 debug.hwui.use_hint_manager=true
 debug.hwui.target_cpu_time_percent=30
