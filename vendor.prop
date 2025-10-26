@@ -200,6 +200,17 @@ persist.vendor.radio.rat_on=combine
 ro.telephony.default_network=22,20
 ro.vendor.use_data_netmgrd=true
 telephony.lteOnCdmaDevice=1
+persist.vendor.radio.add_power_save=1
+persist.vendor.radio.force_on_dc=1
+persist.vendor.radio.lte_vrte_ltd=1
+persist.vendor.radio.snrt_max_layer=3
+persist.vendor.radio.data_con_rprt=1
+persist.vendor.radio.ignore_dom_time=10
+persist.vendor.radio.oppo.signal.adapt=1
+ro.vendor.radio.oppo.signal.adapt=true
+persist.vendor.radio.enable_temp_dds=true
+persist.vendor.radio.custom_ecc=1
+persist.vendor.radio.data_ltd_sys_ind=1
 
 # ScrollOptimizer
 persist.sys.perf.scroll_opt=true
