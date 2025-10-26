@@ -110,7 +110,6 @@ persist.sys.radio.force_lte_ca=true
 persist.vendor.data.iwlan.enable=true
 persist.vendor.data.mode=concurrent
 ril.subscription.types=NV,RUIM
-ro.telephony.default_network=22,22
 ro.vendor.use_data_netmgrd=true
 telephony.lteOnCdmaDevice=1
 persist.sys.fflag.override.settings_network_and_internet_v2=true
