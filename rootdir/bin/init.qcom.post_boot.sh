@@ -31,56 +31,60 @@
 # SPDX-License-Identifier: BSD-3-Clause-Clear
 #
 
-function configure_zram_parameters() { 
+function configure_zram_parameters() {
     swapoff /dev/block/zram0 2>/dev/null || true
-    
+
     # Reset zram device
     [ -w /sys/block/zram0/reset ] && echo 1 > /sys/block/zram0/reset
-    
-    # Set compression algorithm (LZ4 optimized for ARM Cortex-A76/A55)
+
+    # Set compression algorithm (LZ4 is optimal for SM7125)
     echo lz4 > /sys/block/zram0/comp_algorithm 2>/dev/null || return 1
-    
-    # Optimize compression streams for 8-core big.LITTLE (2x A76 + 6x A55)
+
+    # Use 4 compression streams for 2x A76 + 6x A55
     echo 4 > /sys/block/zram0/max_comp_streams 2>/dev/null || true
-    
-    # Set 4GB zram size
+
+    # Allocate 4GB ZRAM
     echo 4294967296 > /sys/block/zram0/disksize 2>/dev/null || return 1
-    
-    # Initialize and enable swap
+
+    # Initialize swap
     mkswap /dev/block/zram0 2>/dev/null || return 1
     swapon /dev/block/zram0 -p 32758 2>/dev/null || return 1
-    
-    # VM tuning - Optimized for Realme 6 Pro mobile workloads
+
     {
-        # Swappiness: Slightly higher for 4GB zram to utilize it effectively
+        # swappiness 
         echo 100 > /proc/sys/vm/swappiness
-        
-        # Cache pressure: Aggressive reclaim for mobile RAM management
-        echo 100 > /proc/sys/vm/vfs_cache_pressure
-        
-        # Page-cluster: Small reads optimal for mobile flash + zram combo
+
+        # file cache
+        echo 10 > /proc/sys/vm/vfs_cache_pressure
+
+        # read cluster
         echo 1 > /proc/sys/vm/page-cluster
-        
-        # Dirty ratios: Conservative for mobile storage longevity
-        echo 20 > /proc/sys/vm/dirty_ratio
+
+        # Dirty handling 
         echo 5 > /proc/sys/vm/dirty_background_ratio
-        
-        # Extra free memory: Buffer for smooth operation
-        echo 1024 > /proc/sys/vm/extra_free_kbytes
-        
-        # Memory overcommit: Conservative for stability
-        echo 1 > /proc/sys/vm/overcommit_memory
+        echo 20 > /proc/sys/vm/dirty_ratio
+        echo 2000 > /proc/sys/vm/dirty_expire_centisecs
+        echo 500 > /proc/sys/vm/dirty_writeback_centisecs
+
+        # Prevent early LMK: proper memory reserve
+        echo 15000 > /proc/sys/vm/extra_free_kbytes
+        echo 38000 > /proc/sys/vm/min_free_kbytes
+
+        # Stable overcommit
+        echo 0 > /proc/sys/vm/overcommit_memory
         echo 50 > /proc/sys/vm/overcommit_ratio
-        
-        # Additional mobile optimizations for Snapdragon 720G
-        echo 1 > /proc/sys/vm/compact_memory 2>/dev/null || true
+
+        # Disable compact (stutter fix)
+        echo 0 > /proc/sys/vm/compact_memory 2>/dev/null || true
+
+        # Avoid killing allocating task (keeps background apps alive)
         echo 0 > /proc/sys/vm/oom_kill_allocating_task 2>/dev/null || true
-        
-        # Optimize readahead for mobile storage patterns
+
+        # Improve sequential read performance
         echo 128 > /sys/block/*/queue/read_ahead_kb 2>/dev/null || true
-        
+
     } 2>/dev/null
-    
+
     return 0
 }
 
