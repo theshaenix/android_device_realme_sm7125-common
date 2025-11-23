@@ -15,7 +15,6 @@
 
 cc_binary {
     name: "android.hardware.sensors@2.1-service.multihal_realme_sm7125",
-    stem: "android.hardware.sensors@2.1-service.multihal",
     defaults: [
         "hidl_defaults",
     ],
