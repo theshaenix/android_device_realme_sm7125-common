@@ -66,12 +66,6 @@ PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/audio/odm/,$(TARGET_COPY_OUT_ODM)/etc) \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/audio/vendor/,$(TARGET_COPY_OUT_VENDOR)/etc)
 
-# AVB
-#PRODUCT_PACKAGES += \
-#    q-gsi.avbpubkey \
-#    r-gsi.avbpubkey \
-#    s-gsi.avbpubkey
-
 # Bluetooth
 PRODUCT_PACKAGES += \
     audio.bluetooth.default
@@ -89,10 +83,6 @@ PRODUCT_COPY_FILES += \
 # Boot animation
 TARGET_SCREEN_HEIGHT := 2400
 TARGET_SCREEN_WIDTH := 1080
-
-# Call recording
-#PRODUCT_PACKAGES += \
-#    com.google.android.apps.dialer.call_recording_audio.features.xml
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -464,10 +454,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.thermal-service.qti
 
-# TextClassifier
-#PRODUCT_PACKAGES += \
-#    textclassifier.bundle1
-
 # Touchscreen
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
@@ -537,9 +523,6 @@ PRODUCT_PACKAGES += \
  PRODUCT_PACKAGES += \
      firmware_wlan_mac.bin_symlink \
      firmware_WCNSS_qcom_cfg.ini_symlink
-
-#PRODUCT_BOOT_JARS += \
-    WfdCommon
 
 # Build Specific VNDK 30 Libs for Android 12+
 PRODUCT_PACKAGES += \
