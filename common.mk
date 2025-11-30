@@ -162,9 +162,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 SYSTEM_OPTIMIZE_JAVA := true
 SYSTEMUI_OPTIMIZE_JAVA := true
 
-# EPPE
-TARGET_DISABLE_EPPE := true
-
 # Fastbootd
 PRODUCT_PACKAGES += \
     fastbootd
