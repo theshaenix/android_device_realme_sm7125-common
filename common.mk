@@ -536,7 +536,6 @@ PRODUCT_PACKAGES += \
     android.frameworks.cameraservice.service@2.0.vendor \
     android.frameworks.cameraservice.service@2.1.vendor \
     android.frameworks.displayservice@1.0.vendor \
-    android.frameworks.schedulerservice@1.0.vendor \
     android.frameworks.stats@1.0.vendor \
     android.hardware.atrace@1.0.vendor \
     android.frameworks.sensorservice@1.0.vendor \
@@ -552,8 +551,6 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@5.0.vendor \
     android.hardware.audio@6.0.vendor \
     android.hardware.authsecret@1.0.vendor \
-    android.hardware.automotive.audiocontrol@1.0.vendor \
-    android.hardware.automotive.audiocontrol@2.0.vendor \
     android.hardware.automotive.can@1.0.vendor \
     android.hardware.automotive.evs@1.0.vendor \
     android.hardware.automotive.evs@1.1.vendor \
@@ -653,11 +650,6 @@ PRODUCT_PACKAGES += \
     android.hardware.usb@1.0.vendor \
     android.hardware.usb@1.1.vendor \
     android.hardware.usb@1.2.vendor \
-    android.hardware.vibrator@1.0.vendor \
-    android.hardware.vibrator@1.1.vendor \
-    android.hardware.vibrator@1.2.vendor \
-    android.hardware.vibrator@1.3.vendor \
-    android.hardware.vr@1.0.vendor \
     android.hardware.weaver@1.0.vendor \
     android.hardware.wifi.hostapd@1.0.vendor \
     android.hardware.wifi.hostapd@1.1.vendor \
