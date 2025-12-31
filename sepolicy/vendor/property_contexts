@@ -4,3 +4,6 @@ ro.hwui.render_ahead    u:object_r:default_prop:s0
 ro.config.avoid_gfx_accel    u:object_r:config_prop:s0
 persist.vendor.fingerprint.fp_id    u:object_r:vendor_default_prop:s0
 oppo.goodix.fp    u:object_r:default_prop:s0
+
+# Bluetooth LEA
+ro.vendor.bluetooth.lea.*  u:object_r:vendor_bluetooth_prop:s0
