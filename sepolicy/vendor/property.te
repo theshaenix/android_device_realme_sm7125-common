@@ -2,4 +2,5 @@
 type oppo_debug_prop, vendor_property_type;
 type oppo_fingerprint_prop, vendor_property_type;
 type oppo_wlan_prop, vendor_property_type;
+type vendor_power_prop, property_type;
 
