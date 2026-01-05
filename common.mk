@@ -357,8 +357,8 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
 #Protobuf
 PRODUCT_PACKAGES += \
     libprotobuf-cpp-full-3.9.1-vendorcompat \
-    libprotobuf-cpp-lite-3.9.1
-
+    libprotobuf-cpp-lite-3.9.1-vendorcompat
+    
 # QTI FWK Detect
 PRODUCT_PACKAGES += \
     libqti_vndfwk_detect.vendor \
