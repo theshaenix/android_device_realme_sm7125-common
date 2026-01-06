@@ -227,9 +227,11 @@ PRODUCT_PACKAGES += \
     init.qcom.usb.rc \
     init.sm7125.rc
 
-# Recovery init script
+# Recovery 
 PRODUCT_PACKAGES += \
-    init.recovery.qcom.sh
+    init.recovery.qcom.sh \
+    init.recovery.qcom.rc \
+    init.recovery.usb.rc
 
 # Vendor shell scripts
 PRODUCT_PACKAGES += \
