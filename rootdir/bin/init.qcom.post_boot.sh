@@ -64,7 +64,6 @@ function configure_zram_parameters() {
         echo 5 > /proc/sys/vm/dirty_background_ratio
         echo 20 > /proc/sys/vm/dirty_ratio
         echo 2000 > /proc/sys/vm/dirty_expire_centisecs
-        echo 500 > /proc/sys/vm/dirty_writeback_centisecs
 
         # Prevent early LMK: proper memory reserve
         echo 15000 > /proc/sys/vm/extra_free_kbytes
