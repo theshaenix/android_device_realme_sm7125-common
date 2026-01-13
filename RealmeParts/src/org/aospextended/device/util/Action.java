@@ -105,29 +105,29 @@ public class Action {
 
             // process the actions
             if (action.equals(ACTION_HOME)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_HOME, isLongpress);
+                triggerVirtualKeypress(context, KeyEvent.KEYCODE_HOME, isLongpress);
                 return;
             } else if (action.equals(ACTION_BACK)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_BACK, isLongpress);
+                triggerVirtualKeypress(context, KeyEvent.KEYCODE_BACK, isLongpress);
                 return;
             } else if (action.equals(ACTION_SEARCH)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH, isLongpress);
+                triggerVirtualKeypress(context, KeyEvent.KEYCODE_SEARCH, isLongpress);
                 return;
             } else if (action.equals(ACTION_MENU)
                     || action.equals(ACTION_MENU_BIG)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_MENU, isLongpress);
+                triggerVirtualKeypress(context, KeyEvent.KEYCODE_MENU, isLongpress);
                 return;
             } else if (action.equals(ACTION_IME_NAVIGATION_LEFT)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_LEFT, isLongpress);
+                triggerVirtualKeypress(context, KeyEvent.KEYCODE_DPAD_LEFT, isLongpress);
                 return;
             } else if (action.equals(ACTION_IME_NAVIGATION_RIGHT)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_RIGHT, isLongpress);
+                triggerVirtualKeypress(context,KeyEvent.KEYCODE_DPAD_RIGHT, isLongpress);
                 return;
             } else if (action.equals(ACTION_IME_NAVIGATION_UP)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_UP, isLongpress);
+                triggerVirtualKeypress(context, KeyEvent.KEYCODE_DPAD_UP, isLongpress);
                 return;
             } else if (action.equals(ACTION_IME_NAVIGATION_DOWN)) {
-                triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_DOWN, isLongpress);
+               triggerVirtualKeypress(context, KeyEvent.KEYCODE_DPAD_DOWN, isLongpress);
                 return;
             } else if (action.equals(ACTION_TORCH)) {
                 try {
@@ -305,8 +305,10 @@ public class Action {
         }
     }
 
-    public static void triggerVirtualKeypress(final int keyCode, boolean longpress) {
-        InputManager im = InputManager.getInstance();
+    public static void triggerVirtualKeypress(Context context,final int keyCode,boolean longpress) {
+    InputManager im = context.getSystemService(InputManager.class);
+    if (im == null) return;
+
         long now = SystemClock.uptimeMillis();
         int downflags = 0;
         int upflags = 0;
