@@ -82,15 +82,6 @@ prebuilt_etc {
     vendor: true,
 }
 
-// Recovery-specific file in bin/
-prebuilt_etc {
-    name: "init.recovery.qcom.sh",
-    src: "bin/init.recovery.qcom.sh",
-    filename: "init.recovery.qcom.sh",
-    recovery: true,
-    vendor: true,
-}
-
 // Vendor-specific shell scripts in bin/
 sh_binary {
     name: "init.at.class_main.sh",

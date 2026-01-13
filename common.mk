@@ -238,7 +238,6 @@ PRODUCT_PACKAGES += \
 
 # Recovery 
 PRODUCT_PACKAGES += \
-    init.recovery.qcom.sh \
     init.recovery.qcom.rc \
     init.recovery.usb.rc
 
