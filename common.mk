@@ -418,7 +418,6 @@ PRODUCT_SOONG_NAMESPACES += \
     kernel/realme/sm7125 \
     hardware/google/interfaces \
     hardware/google/pixel \
-    bootable/deprecated-ota \
     hardware/lineage/interfaces/power-libperfmgr \
     hardware/oplus \
     hardware/qcom-caf/common/libqti-perfd-client
