@@ -23,7 +23,7 @@ $(call inherit-product, hardware/qcom-caf/common/common.mk)
 $(call soong_config_set,surfaceflinger,udfps_lib,//$(LOCAL_PATH):libudfps_extension.realme_sm7125)
 
 # speaker layout channel mask
-$(call soong_config_set,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
+$(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
 
 # Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
@@ -278,7 +278,7 @@ $(call inherit-product-if-exists, vendor/lawnchair/lawnchair.mk)
 PRODUCT_PACKAGES += \
     vendor.lineage.livedisplay-service.sdm
 
-$(call soong_config_set,livedisplay_sdm,enable_dm,false)
+$(call soong_config_set,livedisplay_sdm_bool,enable_dm,false)
 
 # Media
 PRODUCT_PACKAGES += \
