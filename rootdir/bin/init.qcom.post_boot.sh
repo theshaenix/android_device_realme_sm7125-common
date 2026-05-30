@@ -214,10 +214,13 @@ echo -6 > /sys/devices/system/cpu/cpu6/sched_load_boost
 echo -6 > /sys/devices/system/cpu/cpu7/sched_load_boost
 echo 85 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_load
 
-# Enable conservative pl for power save
-echo 1 > /proc/sys/kernel/sched_conservative_pl
+# Conservative predictive-load OFF: was a power-save lean that damps the freq ramp.
+# Off = scheduler uses full WALT prediction -> quicker ramp, snappier (minor battery cost).
+echo 0 > /proc/sys/kernel/sched_conservative_pl
 
-echo "0:1248000" > /sys/module/cpu_boost/parameters/input_boost_freq
+# Input boost: also wake the big cluster (cpu6) on touch, not just little (cpu0). 1267200
+# is the big-cluster hispeed OPP -> snappier app launch / touch without slamming to 2.3GHz max.
+echo "0:1248000 6:1267200" > /sys/module/cpu_boost/parameters/input_boost_freq
 echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
 # Set Memory parameters
@@ -296,3 +299,14 @@ for q in /sys/block/sd*/queue/scheduler; do echo deadline > $q; done
 # 2 kswapd threads (OPLUS multi-kswapd). 8GB/8-core: a single kswapd can't keep up when
 # zram reclaim is active, forcing foreground tasks into direct reclaim = stalls/jank.
 echo 2 > /proc/sys/vm/kswapd_threads
+
+# ---- GPU (Adreno 618) tuning ----
+# Stock had NO gpu governor setup, leaving the Adreno on raw defaults. Keep the correct
+# msm-adreno-tz governor but bias it to ramp sooner and hold clocks a touch longer between
+# frames -> smoother 90Hz scroll/animation + steadier game fps. Full pwrlevel range stays
+# governor-controlled (no forced floor), so idle power is unchanged.
+if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
+    echo msm-adreno-tz > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+    echo 2 > /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost   # 0..3; 2 = snappier ramp under load
+    echo 100 > /sys/class/kgsl/kgsl-3d0/idle_timer          # ms; hold clocks slightly longer between bursts
+fi
