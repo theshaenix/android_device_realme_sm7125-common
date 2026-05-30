@@ -137,7 +137,9 @@ ro.surface_flinger.support_kernel_idle_timer=true
 ro.surface_flinger.has_HDR_display=true
 ro.surface_flinger.has_wide_color_display=true
 ro.surface_flinger.use_color_management=true
-ro.config.avoid_gfx_accel=true
+# Inherited low-RAM (Android Go) flag that disables HW-accelerated rendering -> forces
+# slow software/CPU paths for window animations and burns battery. Wrong for 8GB/Adreno 618.
+ro.config.avoid_gfx_accel=false
 debug.sf.predict_hwc_composition_strategy=0
 debug.sf.auto_latch_unsignaled=0
 

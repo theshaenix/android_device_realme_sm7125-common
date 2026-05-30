@@ -288,8 +288,11 @@ echo 0 > /proc/sys/kernel/sched_boost
 # Turn on sleep modes
 echo 0 > /sys/module/lpm_levels/parameters/sleep_disabled
 
-# Change IO scheduler to noop for better performance
-echo noop > /sys/block/sda/queue/scheduler
+# Use deadline on all UFS LUNs (matches kernel default). noop does no request
+# reordering -> worse read tail-latency / "feels slow initially" on UFS. Cover sda-sdf,
+# not just sda, so every LUN (incl. the one backing /data) gets the better scheduler.
+for q in /sys/block/sd*/queue/scheduler; do echo deadline > $q; done
 
-# Create 1 kswapd thread 
-echo 1 > /proc/sys/vm/kswapd_threads
+# 2 kswapd threads (OPLUS multi-kswapd). 8GB/8-core: a single kswapd can't keep up when
+# zram reclaim is active, forcing foreground tasks into direct reclaim = stalls/jank.
+echo 2 > /proc/sys/vm/kswapd_threads
