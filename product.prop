@@ -21,7 +21,10 @@ vendor.display.disable_metadata_dynamic_fps=1
 ro.config.low_ram=false
 ro.lmk.log_stats=false
 ro.lmk.kill_heaviest_task=true
-ro.lmk.swap_free_low_percentage=100
+# Was 100 (= "swap always low") which made lmkd kill apps instead of swapping, leaving
+# zram unused while apps thrashed. 10 = treat swap low only under ~10% free, so the
+# kernel actually fills zram before lmkd starts killing.
+ro.lmk.swap_free_low_percentage=10
 
 # LMK tuning
 ro.lmk.filecache_min_kb=153600
