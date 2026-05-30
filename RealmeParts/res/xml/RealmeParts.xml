@@ -38,6 +38,28 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="battery_category"
+        android:title="@string/battery_title">
+
+        <SwitchPreference
+            android:key="charge_limit_enable"
+            android:title="@string/charge_limit_enable_title"
+            android:summary="@string/charge_limit_enable_summary"
+            android:defaultValue="false" />
+
+        <ListPreference
+            android:key="charge_limit_level"
+            android:title="@string/charge_limit_level_title"
+            android:summary="@string/charge_limit_level_summary"
+            android:dialogTitle="@string/charge_limit_level_title"
+            android:entries="@array/charge_limit_entries"
+            android:entryValues="@array/charge_limit_values"
+            android:defaultValue="80"
+            android:dependency="charge_limit_enable" />
+
+    </PreferenceCategory>
+
 <!--
     <PreferenceCategory
         android:key="vib_strength_category"

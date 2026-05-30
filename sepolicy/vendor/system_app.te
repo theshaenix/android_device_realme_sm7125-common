@@ -8,6 +8,10 @@ r_dir_file(system_app, vendor_sysfs_usb_supply);
 allow system_app vendor_sysfs_usb_supply:file rw_file_perms;
 allow system_app vendor_sysfs_battery_supply:dir search;
 
+# RealmeParts "Charge limit" toggles the OPLUS charge-enable switch
+# (/sys/class/power_supply/battery/mmi_charging_enable -> vendor_sysfs_battery_supply)
+allow system_app vendor_sysfs_battery_supply:file rw_file_perms;
+
 # RealmeParts "GPU boost" toggle writes the Adreno adrenoboost knob
 # (/sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost -> vendor_sysfs_kgsl)
 r_dir_file(system_app, vendor_sysfs_kgsl);

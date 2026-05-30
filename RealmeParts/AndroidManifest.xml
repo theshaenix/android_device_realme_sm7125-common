@@ -81,6 +81,9 @@
                  android:permission="RealmeDozeService">
         </service>
 
+        <service android:name=".battery.ChargeLimitService"
+                 android:exported="false" />
+
         <activity
             android:name=".doze.DozeSettingsActivity"
             android:label="@string/ambient_display_title">

@@ -32,6 +32,7 @@ import org.aospextended.device.util.Utils;
 import org.aospextended.device.doze.DozeUtils;
 import org.aospextended.device.vibration.VibratorStrengthPreference;
 import org.aospextended.device.gpu.GpuBoostSettings;
+import org.aospextended.device.battery.ChargeLimitSettings;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -45,6 +46,7 @@ public class BootReceiver extends BroadcastReceiver {
             TouchGestures.enableDt2w(prefs.getBoolean(
                 TouchGestures.PREF_DT2W_ENABLE, true));
             GpuBoostSettings.restore(context);
+            ChargeLimitSettings.restore(context);
         }
         DozeUtils.checkDozeService(context);
 //        VibratorStrengthPreference.restore(context);
