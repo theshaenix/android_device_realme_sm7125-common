@@ -16,6 +16,7 @@
 
 package org.aospextended.device.gestures;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -28,7 +29,10 @@ public class TouchGesturesActivity extends Activity {
 
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new TouchGestures()).commit();
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

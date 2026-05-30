@@ -63,7 +63,9 @@ public class DozeSettingsFragment extends PreferenceFragment implements OnPrefer
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.doze_panel);
         final ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         SharedPreferences prefs = Utils.getSharedPreferences(getActivity());
 

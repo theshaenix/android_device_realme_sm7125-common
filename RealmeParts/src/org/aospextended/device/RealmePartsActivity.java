@@ -15,6 +15,7 @@
  */
 package org.aospextended.device;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,7 +37,13 @@ public class RealmePartsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        // On Android 16 the Settings DeviceDefault theme no longer guarantees a
+        // classic ActionBar (it moved to a toolbar), so getActionBar() can be
+        // null. Guard it; an unguarded call here was crashing the screen on open.
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         Fragment fragment = getFragmentManager().findFragmentById(android.R.id.content);
         if (fragment == null) {
