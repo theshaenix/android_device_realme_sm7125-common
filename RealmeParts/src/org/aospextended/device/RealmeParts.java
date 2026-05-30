@@ -45,6 +45,8 @@ import org.aospextended.device.gestures.TouchGesturesActivity;
 import org.aospextended.device.doze.DozeSettingsActivity;
 import org.aospextended.device.vibration.VibratorStrengthPreference;
 import org.aospextended.device.gpu.GpuBoostSettings;
+import org.aospextended.device.battery.ChargeLimitSettings;
+import org.aospextended.device.battery.ChargeLimitService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -71,6 +73,8 @@ public class RealmeParts extends PreferenceFragment implements
     private Preference mGesturesPref;
     private VibratorStrengthPreference mVibratorStrength;
     private ListPreference mGpuBoost;
+    private SwitchPreference mChargeLimitEnable;
+    private ListPreference mChargeLimitLevel;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -112,6 +116,20 @@ public class RealmeParts extends PreferenceFragment implements
             getPreferenceScreen().removePreference(performance);
         }
 
+        PreferenceCategory battery = (PreferenceCategory) getPreferenceScreen()
+                 .findPreference("battery_category");
+        mChargeLimitEnable = (SwitchPreference) findPreference(ChargeLimitSettings.KEY_ENABLE);
+        mChargeLimitLevel = (ListPreference) findPreference(ChargeLimitSettings.KEY_LEVEL);
+        if (ChargeLimitSettings.isSupported()) {
+            mChargeLimitEnable.setOnPreferenceChangeListener(this);
+            mChargeLimitLevel.setValue(
+                    String.valueOf(ChargeLimitSettings.getLevel(getContext())));
+            mChargeLimitLevel.setSummary(mChargeLimitLevel.getEntry());
+            mChargeLimitLevel.setOnPreferenceChangeListener(this);
+        } else if (battery != null) {
+            getPreferenceScreen().removePreference(battery);
+        }
+
 
 /*        PreferenceCategory vib_strength = (PreferenceCategory) getPreferenceScreen()
                  .findPreference("vib_strength_category");
@@ -148,6 +166,19 @@ public class RealmeParts extends PreferenceFragment implements
             if (index >= 0) {
                 mGpuBoost.setSummary(mGpuBoost.getEntries()[index]);
             }
+        } else if (ChargeLimitSettings.KEY_ENABLE.equals(key)) {
+            ChargeLimitSettings.onEnableChanged(getContext(), (Boolean) newValue);
+        } else if (ChargeLimitSettings.KEY_LEVEL.equals(key)) {
+            final String value = (String) newValue;
+            final int index = mChargeLimitLevel.findIndexOfValue(value);
+            if (index >= 0) {
+                mChargeLimitLevel.setSummary(mChargeLimitLevel.getEntries()[index]);
+            }
+            // Persist now (the framework persists only after we return) so the
+            // monitor re-evaluates against the new cap immediately.
+            Utils.getSharedPreferences(getContext()).edit()
+                    .putString(ChargeLimitSettings.KEY_LEVEL, value).apply();
+            ChargeLimitService.start(getContext());
         }
         return true;
     }

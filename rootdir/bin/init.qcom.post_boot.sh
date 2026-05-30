@@ -309,4 +309,8 @@ if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
     echo msm-adreno-tz > /sys/class/kgsl/kgsl-3d0/devfreq/governor
     echo 2 > /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost   # 0..3; 2 = snappier ramp under load
     echo 100 > /sys/class/kgsl/kgsl-3d0/idle_timer          # ms; hold clocks slightly longer between bursts
+    # adrenoboost is created root:root, so the RealmeParts "GPU boost" toggle
+    # (uid system) can't write it. Hand the node to system so the app can.
+    chown system system /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost
+    chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost
 fi

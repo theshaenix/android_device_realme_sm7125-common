@@ -188,4 +188,11 @@
     <string name="gpu_boost_aggressive">Aggressive (default)</string>
     <string name="gpu_boost_max">Maximum</string>
 
+    <!-- Battery -->
+    <string name="battery_title">Battery</string>
+    <string name="charge_limit_enable_title">Charge limit</string>
+    <string name="charge_limit_enable_summary">Stop charging at a set level to reduce battery wear from sitting at 100%</string>
+    <string name="charge_limit_level_title">Charge limit level</string>
+    <string name="charge_limit_level_summary">Charging pauses at this level and resumes if it drops below it</string>
+
 </resources>
