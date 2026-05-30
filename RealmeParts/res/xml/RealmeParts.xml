@@ -23,6 +23,21 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="performance_category"
+        android:title="@string/performance_title">
+
+        <ListPreference
+            android:key="gpu_boost_level"
+            android:title="@string/gpu_boost_title"
+            android:summary="@string/gpu_boost_summary"
+            android:dialogTitle="@string/gpu_boost_title"
+            android:entries="@array/gpu_boost_entries"
+            android:entryValues="@array/gpu_boost_values"
+            android:defaultValue="2" />
+
+    </PreferenceCategory>
+
 <!--
     <PreferenceCategory
         android:key="vib_strength_category"

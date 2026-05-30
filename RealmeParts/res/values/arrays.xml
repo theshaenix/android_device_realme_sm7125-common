@@ -42,4 +42,19 @@
         <item>null</item>
     </string-array>
 
+    <!-- GPU Boost (Adreno adrenoboost 0..3) -->
+    <string-array name="gpu_boost_entries">
+        <item>@string/gpu_boost_off</item>
+        <item>@string/gpu_boost_light</item>
+        <item>@string/gpu_boost_aggressive</item>
+        <item>@string/gpu_boost_max</item>
+    </string-array>
+
+    <string-array name="gpu_boost_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 </resources>
