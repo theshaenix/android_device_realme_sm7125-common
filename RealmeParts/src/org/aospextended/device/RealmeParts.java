@@ -44,6 +44,7 @@ import org.aospextended.device.gestures.TouchGestures;
 import org.aospextended.device.gestures.TouchGesturesActivity;
 import org.aospextended.device.doze.DozeSettingsActivity;
 import org.aospextended.device.vibration.VibratorStrengthPreference;
+import org.aospextended.device.gpu.GpuBoostSettings;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,6 +70,7 @@ public class RealmeParts extends PreferenceFragment implements
     private Preference mDozePref;
     private Preference mGesturesPref;
     private VibratorStrengthPreference mVibratorStrength;
+    private ListPreference mGpuBoost;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -99,6 +101,17 @@ public class RealmeParts extends PreferenceFragment implements
             }
         });
 
+        PreferenceCategory performance = (PreferenceCategory) getPreferenceScreen()
+                 .findPreference("performance_category");
+        mGpuBoost = (ListPreference) findPreference(GpuBoostSettings.KEY);
+        if (GpuBoostSettings.isSupported()) {
+            mGpuBoost.setValue(GpuBoostSettings.getValue(getContext()));
+            mGpuBoost.setSummary(mGpuBoost.getEntry());
+            mGpuBoost.setOnPreferenceChangeListener(this);
+        } else if (performance != null) {
+            getPreferenceScreen().removePreference(performance);
+        }
+
 
 /*        PreferenceCategory vib_strength = (PreferenceCategory) getPreferenceScreen()
                  .findPreference("vib_strength_category");
@@ -128,6 +141,14 @@ public class RealmeParts extends PreferenceFragment implements
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         final String key = preference.getKey();
+        if (GpuBoostSettings.KEY.equals(key)) {
+            final String value = (String) newValue;
+            GpuBoostSettings.setValue(value);
+            final int index = mGpuBoost.findIndexOfValue(value);
+            if (index >= 0) {
+                mGpuBoost.setSummary(mGpuBoost.getEntries()[index]);
+            }
+        }
         return true;
     }
 }

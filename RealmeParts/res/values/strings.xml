@@ -179,5 +179,13 @@
     <string name="double_tap_gesture_title">Double tap to check phone</string>
     <string name="double_tap_gesture_summary">Double tap to show notifications</string>
 
+    <!-- GPU Boost (Adreno) -->
+    <string name="performance_title">Performance</string>
+    <string name="gpu_boost_title">GPU boost</string>
+    <string name="gpu_boost_summary">Bias the Adreno GPU governor toward higher clocks for smoother UI and games (small battery cost)</string>
+    <string name="gpu_boost_off">Off</string>
+    <string name="gpu_boost_light">Light</string>
+    <string name="gpu_boost_aggressive">Aggressive (default)</string>
+    <string name="gpu_boost_max">Maximum</string>
 
 </resources>
