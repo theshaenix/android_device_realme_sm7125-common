@@ -41,7 +41,8 @@
         <activity-alias
             android:name=".RealmeParts"
             android:label="@string/RealmeParts"
-            android:targetActivity="RealmePartsActivity">
+            android:targetActivity="RealmePartsActivity"
+            android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
@@ -64,13 +65,15 @@
 
         <activity
             android:name=".gestures.TouchGesturesActivity"
-            android:label="@string/screen_off_gestures">
+            android:label="@string/screen_off_gestures"
+            android:exported="true">
           <intent-filter>
                 <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
           </intent-filter>
         </activity>
 
-        <receiver android:name=".BootReceiver" >
+        <receiver android:name=".BootReceiver"
+                  android:exported="true" >
           <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -86,7 +89,8 @@
 
         <activity
             android:name=".doze.DozeSettingsActivity"
-            android:label="@string/ambient_display_title">
+            android:label="@string/ambient_display_title"
+            android:exported="true">
             <intent-filter>
                 <action android:name="org.aospextended.device.DOZE_SETTINGS" />
                 <category android:name="android.intent.category.DEFAULT" />
