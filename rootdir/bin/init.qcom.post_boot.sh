@@ -70,8 +70,12 @@ function configure_memory_parameters() {
     MemTotalStr=`cat /proc/meminfo | grep MemTotal`
     MemTotal=${MemTotalStr:16:8}
     
-    # Configure ZRAM parameters with LZ4 compression
-    echo lz4 > /sys/block/zram0/comp_algorithm
+    # Configure ZRAM parameters with zstd compression.
+    # zstd gives ~3.1x vs lz4's ~2x ratio -> ~50% more effective RAM, so more
+    # apps stay resident under pressure (trades a little swap-in latency, fine
+    # on SD720G). Helps the genuine memory-pressure path; the screen-on cached-app
+    # kill is a separate frameworks/base issue (PhoneWindowManager).
+    echo zstd > /sys/block/zram0/comp_algorithm
     echo 100 > /proc/sys/vm/swappiness
     echo 60 > /proc/sys/vm/direct_swappiness
     echo 0 > /proc/sys/vm/page-cluster
@@ -165,7 +169,11 @@ function configure_memory_parameters() {
     
     # Set global VM parameters
     echo 0 > /sys/module/vmpressure/parameters/allocstall_threshold
-    echo 1 > /proc/sys/vm/watermark_scale_factor
+    # wsf was forced to 1 (laziest reclaim -> kswapd wakes late -> direct-reclaim
+    # stalls/jank). 30 is the community value for non-MGLRU LRU devices: kswapd
+    # reclaims a bit more proactively without the over-reclaim seen at 100.
+    # NOTE: this is the one knob to watch; revert to 1 if anything feels worse.
+    echo 30 > /proc/sys/vm/watermark_scale_factor
     
     # Configure read-ahead values
     configure_read_ahead_kb_values
