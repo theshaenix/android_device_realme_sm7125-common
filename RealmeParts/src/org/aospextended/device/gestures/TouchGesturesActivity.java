@@ -16,33 +16,21 @@
 
 package org.aospextended.device.gestures;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.MenuItem;
 
-public class TouchGesturesActivity extends Activity {
+import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
+import com.android.settingslib.collapsingtoolbar.R;
+
+public class TouchGesturesActivity extends CollapsingToolbarBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new TouchGestures()).commit();
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (getSupportFragmentManager().findFragmentById(R.id.content_frame) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, new TouchGestures())
+                    .commit();
         }
     }
 }

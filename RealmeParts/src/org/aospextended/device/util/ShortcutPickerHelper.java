@@ -17,7 +17,7 @@
 package org.aospextended.device.util;
 
 import android.app.Activity;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
@@ -40,18 +40,19 @@ public class ShortcutPickerHelper {
     public static final int REQUEST_PICK_APPLICATION = 101;
     public static final int REQUEST_CREATE_SHORTCUT = 102;
 
-    private Activity mParent;
+    private Fragment mParent;
+    private Context mContext;
     private OnPickListener mListener;
     private PackageManager mPackageManager;
-    private int lastFragmentId;
 
     public interface OnPickListener {
         void shortcutPicked(String uri, String friendlyName, Bitmap bmp, boolean isApplication);
     }
 
-    public ShortcutPickerHelper(Activity parent, OnPickListener listener) {
+    public ShortcutPickerHelper(Fragment parent, OnPickListener listener) {
         mParent = parent;
-        mPackageManager = mParent.getPackageManager();
+        mContext = parent.requireContext();
+        mPackageManager = mContext.getPackageManager();
         mListener = listener;
     }
 
@@ -76,8 +77,6 @@ public class ShortcutPickerHelper {
     }
 
     public void pickShortcut(int fragmentId, boolean fullAppsOnly) {
-        lastFragmentId = fragmentId;
-
         if (fullAppsOnly) {
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -89,17 +88,17 @@ public class ShortcutPickerHelper {
             Bundle bundle = new Bundle();
 
             ArrayList<String> shortcutNames = new ArrayList<String>();
-            shortcutNames.add(mParent.getString(R.string.group_applications));
+            shortcutNames.add(mContext.getString(R.string.group_applications));
             bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
 
             ArrayList<ShortcutIconResource> shortcutIcons = new ArrayList<ShortcutIconResource>();
-            shortcutIcons.add(ShortcutIconResource.fromContext(mParent,
+            shortcutIcons.add(ShortcutIconResource.fromContext(mContext,
                     android.R.drawable.sym_def_app_icon));
             bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, new Intent(Intent.ACTION_CREATE_SHORTCUT));
-            pickIntent.putExtra(Intent.EXTRA_TITLE, mParent.getText(
+            pickIntent.putExtra(Intent.EXTRA_TITLE, mContext.getText(
                     R.string.select_custom_app_title));
             pickIntent.putExtras(bundle);
             startFragmentOrActivity(pickIntent, REQUEST_PICK_SHORTCUT);
@@ -107,20 +106,15 @@ public class ShortcutPickerHelper {
     }
 
     private void startFragmentOrActivity(Intent pickIntent, int requestCode) {
-        if (lastFragmentId == 0) {
-            mParent.startActivityForResult(pickIntent, requestCode);
-        } else {
-            Fragment cFrag = mParent.getFragmentManager().findFragmentById(lastFragmentId);
-            if (cFrag != null) {
-                mParent.startActivityFromFragment(cFrag, pickIntent, requestCode);
-            }
-        }
+        // Launch from the (androidx) fragment so the result is routed back to its
+        // onActivityResult, which forwards to ShortcutPickerHelper.onActivityResult.
+        mParent.startActivityForResult(pickIntent, requestCode);
     }
 
     private void processShortcut(Intent intent,
         int requestCodeApplication, int requestCodeShortcut) {
         // Handle case where user selected "Applications"
-        String applicationName = mParent.getResources().getString(R.string.group_applications);
+        String applicationName = mContext.getResources().getString(R.string.group_applications);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
 
         if (applicationName != null && applicationName.equals(shortcutName)) {
@@ -137,7 +131,7 @@ public class ShortcutPickerHelper {
 
     private void completeSetCustomApp(Intent data) {
         mListener.shortcutPicked(data.toUri(0),
-            getFriendlyActivityName(mParent, mPackageManager, data, false), null, true);
+            getFriendlyActivityName(mContext, mPackageManager, data, false), null, true);
     }
 
     private void completeSetCustomShortcut(Intent data) {
@@ -171,7 +165,7 @@ public class ShortcutPickerHelper {
             }
         }
         mListener.shortcutPicked(appUri,
-                getFriendlyShortcutName(mParent, mPackageManager, intent), bmp, false);
+                getFriendlyShortcutName(mContext, mPackageManager, intent), bmp, false);
     }
 
     public static String getFriendlyActivityName(Context context,

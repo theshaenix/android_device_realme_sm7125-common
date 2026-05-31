@@ -16,22 +16,11 @@
 
 package org.aospextended.device;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuInflater;
-import android.app.Fragment;
-import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceCategory;
@@ -61,7 +50,7 @@ import android.widget.Toast;
 import org.aospextended.device.R;
 import org.aospextended.device.util.Utils;
 
-public class RealmeParts extends PreferenceFragment implements
+public class RealmeParts extends PreferenceFragmentCompat implements
         Preference.OnPreferenceChangeListener {
     private static final boolean DEBUG = Utils.DEBUG;
     private static final String TAG = "RealmeParts";
@@ -110,7 +99,10 @@ public class RealmeParts extends PreferenceFragment implements
         mGpuBoost = (ListPreference) findPreference(GpuBoostSettings.KEY);
         if (GpuBoostSettings.isSupported()) {
             mGpuBoost.setValue(GpuBoostSettings.getValue(getContext()));
-            mGpuBoost.setSummary(mGpuBoost.getEntry());
+            // SimpleSummaryProvider shows the current entry as the summary and
+            // updates itself on change. It also avoids the String.format crash
+            // that the manual setSummary path hit on entries containing '%'.
+            mGpuBoost.setSummaryProvider(ListPreference.SimpleSummaryProvider.getInstance());
             mGpuBoost.setOnPreferenceChangeListener(this);
         } else if (performance != null) {
             getPreferenceScreen().removePreference(performance);
@@ -124,7 +116,10 @@ public class RealmeParts extends PreferenceFragment implements
             mChargeLimitEnable.setOnPreferenceChangeListener(this);
             mChargeLimitLevel.setValue(
                     String.valueOf(ChargeLimitSettings.getLevel(getContext())));
-            mChargeLimitLevel.setSummary(mChargeLimitLevel.getEntry());
+            // '%' in the entries ("80%") crashed the old manual-format summary;
+            // SimpleSummaryProvider renders the entry verbatim and auto-updates.
+            mChargeLimitLevel.setSummaryProvider(
+                    ListPreference.SimpleSummaryProvider.getInstance());
             mChargeLimitLevel.setOnPreferenceChangeListener(this);
         } else if (battery != null) {
             getPreferenceScreen().removePreference(battery);
@@ -146,34 +141,16 @@ public class RealmeParts extends PreferenceFragment implements
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            return true;
-        default:
-            break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         final String key = preference.getKey();
+        // ListPreference summaries refresh automatically via SimpleSummaryProvider
+        // once the new value is applied, so no manual setSummary is needed here.
         if (GpuBoostSettings.KEY.equals(key)) {
-            final String value = (String) newValue;
-            GpuBoostSettings.setValue(value);
-            final int index = mGpuBoost.findIndexOfValue(value);
-            if (index >= 0) {
-                mGpuBoost.setSummary(mGpuBoost.getEntries()[index]);
-            }
+            GpuBoostSettings.setValue((String) newValue);
         } else if (ChargeLimitSettings.KEY_ENABLE.equals(key)) {
             ChargeLimitSettings.onEnableChanged(getContext(), (Boolean) newValue);
         } else if (ChargeLimitSettings.KEY_LEVEL.equals(key)) {
             final String value = (String) newValue;
-            final int index = mChargeLimitLevel.findIndexOfValue(value);
-            if (index >= 0) {
-                mChargeLimitLevel.setSummary(mChargeLimitLevel.getEntries()[index]);
-            }
             // Persist now (the framework persists only after we return) so the
             // monitor re-evaluates against the new cap immediately.
             Utils.getSharedPreferences(getContext()).edit()
