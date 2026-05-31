@@ -97,6 +97,19 @@
             </intent-filter>
         </activity>
 
+        <!-- SettingsLib and SettingsLibCollapsingToolbarBaseActivity each bundle an
+             androidx App Startup InitializationProvider with library-specific
+             authorities. The manifest merger keys providers by class name, so the
+             two authorities collide. Declare one merged provider with this app's
+             own authority and override the conflicting attribute; child <meta-data>
+             initializers from both libraries still merge in. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="org.aospextended.device.androidx-startup"
+            android:exported="false"
+            tools:node="merge"
+            tools:replace="android:authorities" />
+
     </application>
 
 </manifest>
