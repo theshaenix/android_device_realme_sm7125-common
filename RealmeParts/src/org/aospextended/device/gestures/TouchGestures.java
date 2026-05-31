@@ -19,7 +19,8 @@ package org.aospextended.device.gestures;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.view.MenuProvider;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,11 +31,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.Preference.OnPreferenceChangeListener;
 import androidx.preference.Preference.OnPreferenceClickListener;
-import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 
@@ -44,9 +46,9 @@ import org.aospextended.device.util.Utils;
 import org.aospextended.device.R;
 import org.aospextended.device.util.ShortcutPickerHelper;
 
-public class TouchGestures extends PreferenceFragment implements
+public class TouchGestures extends PreferenceFragmentCompat implements
         OnPreferenceChangeListener, OnPreferenceClickListener,
-        ShortcutPickerHelper.OnPickListener {
+        ShortcutPickerHelper.OnPickListener, MenuProvider {
 
     private static String GESTURE_PATH = "/proc/touchpanel/gesture_enable";
     private static String DT2W_PATH = "/proc/touchpanel/double_tap_enable";
@@ -107,7 +109,7 @@ public class TouchGestures extends PreferenceFragment implements
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        mPicker = new ShortcutPickerHelper(getActivity(), this);
+        mPicker = new ShortcutPickerHelper(this, this);
 
         mPrefs = Utils.getSharedPreferences(getActivity());
 
@@ -115,8 +117,14 @@ public class TouchGestures extends PreferenceFragment implements
         mActionEntries = getResources().getStringArray(R.array.action_screen_off_entries);
 
         initPrefs();
+    }
 
-        setHasOptionsMenu(true);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Modern menu API: contribute the "Reset" action to the host activity's
+        // collapsing toolbar, scoped to this fragment's view lifecycle.
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
     }
 
     public static boolean isSupported() {
@@ -393,27 +401,26 @@ public class TouchGestures extends PreferenceFragment implements
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_RESET:
-                    showDialogInner(DLG_RESET_TO_DEFAULT, null, 0);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateMenu(Menu menu, MenuInflater inflater) {
         menu.add(0, MENU_RESET, 0, R.string.reset)
                 .setIcon(R.drawable.ic_settings_reset)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(MenuItem item) {
+        if (item.getItemId() == MENU_RESET) {
+            showDialogInner(DLG_RESET_TO_DEFAULT, null, 0);
+            return true;
+        }
+        return false;
     }
 
     private void showDialogInner(int id, String key, int title) {
         DialogFragment newFragment =
                 MyAlertDialogFragment.newInstance(id, key, title);
         newFragment.setTargetFragment(this, 0);
-        newFragment.show(getFragmentManager(), "dialog " + id);
+        newFragment.show(getParentFragmentManager(), "dialog " + id);
     }
 
     public static class MyAlertDialogFragment extends DialogFragment {

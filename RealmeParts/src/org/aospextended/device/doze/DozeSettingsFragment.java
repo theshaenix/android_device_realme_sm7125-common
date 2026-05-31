@@ -21,7 +21,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -37,13 +37,13 @@ import android.widget.TextView;
 import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceChangeListener;
 import androidx.preference.PreferenceCategory;
-import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
 import org.aospextended.device.R;
 import org.aospextended.device.util.Utils;
 
-public class DozeSettingsFragment extends PreferenceFragment implements OnPreferenceChangeListener,
+public class DozeSettingsFragment extends PreferenceFragmentCompat implements OnPreferenceChangeListener,
         CompoundButton.OnCheckedChangeListener {
 
     private TextView mTextView;
@@ -62,10 +62,6 @@ public class DozeSettingsFragment extends PreferenceFragment implements OnPrefer
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.doze_panel);
-        final ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
         SharedPreferences prefs = Utils.getSharedPreferences(getActivity());
 
@@ -183,15 +179,6 @@ public class DozeSettingsFragment extends PreferenceFragment implements OnPrefer
         mDoubleTapPreference.setEnabled(isChecked);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            getActivity().onBackPressed();
-            return true;
-        }
-        return false;
-    }
-
     public static class HelpDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -213,6 +200,6 @@ public class DozeSettingsFragment extends PreferenceFragment implements OnPrefer
 
     private void showHelp() {
         HelpDialogFragment fragment = new HelpDialogFragment();
-        fragment.show(getFragmentManager(), "help_dialog");
+        fragment.show(getParentFragmentManager(), "help_dialog");
     }
 }

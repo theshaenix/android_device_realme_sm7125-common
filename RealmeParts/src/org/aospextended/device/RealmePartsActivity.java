@@ -15,57 +15,27 @@
  */
 package org.aospextended.device;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import androidx.preference.PreferenceFragment;
-import androidx.preference.PreferenceManager;
 
-public class RealmePartsActivity extends Activity {
+import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
+import com.android.settingslib.collapsingtoolbar.R;
 
-    private RealmeParts mRealmePartsFragment;
+/**
+ * Hosts the main RealmeParts screen inside a collapsing Material toolbar, the
+ * same chrome the system Settings app uses on Android 12+. The toolbar, title
+ * (from the activity label) and Up/back navigation are all handled by
+ * {@link CollapsingToolbarBaseActivity}, so no ActionBar wiring is needed here.
+ */
+public class RealmePartsActivity extends CollapsingToolbarBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // On Android 16 the Settings DeviceDefault theme no longer guarantees a
-        // classic ActionBar (it moved to a toolbar), so getActionBar() can be
-        // null. Guard it; an unguarded call here was crashing the screen on open.
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        Fragment fragment = getFragmentManager().findFragmentById(android.R.id.content);
-        if (fragment == null) {
-            mRealmePartsFragment = new RealmeParts();
-            getFragmentManager().beginTransaction()
-                .add(android.R.id.content, mRealmePartsFragment)
-                .commit();
-        } else {
-            mRealmePartsFragment = (RealmeParts) fragment;
+        if (getSupportFragmentManager().findFragmentById(R.id.content_frame) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, new RealmeParts())
+                    .commit();
         }
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            finish();
-            return true;
-        default:
-            break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
- 
 }

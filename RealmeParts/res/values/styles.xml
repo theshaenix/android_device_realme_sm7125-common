@@ -14,7 +14,12 @@
     limitations under the License.
 -->
 <resources>
+    <!-- Modern SubSettings-style theme: DeviceDefault.Settings with the decor
+         ActionBar removed so CollapsingToolbarBaseActivity can install its own
+         collapsing Material toolbar (matches the system Settings app on A12+). -->
     <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="preferenceTheme">@style/PreferenceTheme</item>
     </style>
 
