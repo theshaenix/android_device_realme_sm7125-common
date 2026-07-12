@@ -63,8 +63,6 @@ allow flags_health_check hypervisor_prop:file { getattr open map };
 allow flags_health_check incremental_prop:file { getattr open map };
 
 allow flags_health_check apexd_config_prop:file map;
-allow flags_health_check apexd_prop:file { getattr map open };
-allow flags_health_check apk_verity_prop:file map;
 allow flags_health_check audio_config_prop:file { getattr map open };
 allow flags_health_check bluetooth_audio_hal_prop:file map;
 allow flags_health_check bluetooth_prop:file map;
