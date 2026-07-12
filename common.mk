@@ -104,7 +104,6 @@ $(call inherit-product-if-exists, vendor/certprops/Android.mk)
 
 # Config Store
 PRODUCT_PACKAGES += \
-    disable_configstore \
     vendor.qti.hardware.capabilityconfigstore@1.0 \
     vendor.qti.hardware.capabilityconfigstore@1.0.vendor
 
@@ -539,9 +538,7 @@ PRODUCT_PACKAGES += \
     android.frameworks.cameraservice.device@2.0.vendor \
     android.frameworks.cameraservice.service@2.0.vendor \
     android.frameworks.cameraservice.service@2.1.vendor \
-    android.frameworks.displayservice@1.0.vendor \
     android.frameworks.schedulerservice@1.0.vendor \
-    android.frameworks.stats@1.0.vendor \
     android.hardware.atrace@1.0.vendor \
     android.frameworks.sensorservice@1.0.vendor \
     android.hardware.audio.common@4.0.vendor \
@@ -561,7 +558,6 @@ PRODUCT_PACKAGES += \
     android.hardware.automotive.can@1.0.vendor \
     android.hardware.automotive.evs@1.0.vendor \
     android.hardware.automotive.evs@1.1.vendor \
-    android.hardware.automotive.sv@1.0.vendor \
     android.hardware.automotive.vehicle@2.0.vendor \
     android.hardware.biometrics.face@1.0.vendor \
     android.hardware.biometrics.fingerprint@2.1.vendor \
@@ -597,8 +593,6 @@ PRODUCT_PACKAGES += \
     android.hardware.confirmationui@1.0.vendor \
     android.hardware.contexthub@1.0.vendor \
     android.hardware.contexthub@1.1.vendor \
-    android.hardware.dumpstate@1.0.vendor \
-    android.hardware.dumpstate@1.1.vendor \
     android.hardware.fastboot@1.0.vendor \
     android.hardware.gatekeeper@1.0.vendor \
     android.hardware.gnss.measurement_corrections@1.0.vendor \
@@ -613,9 +607,6 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.2.vendor \
     android.hardware.graphics.composer@2.3.vendor \
     android.hardware.graphics.composer@2.4.vendor \
-    android.hardware.input.classifier@1.0.vendor \
-    android.hardware.input.common@1.0.vendor \
-    android.hardware.ir@1.0.vendor \
     android.hardware.keymaster@3.0.vendor \
     android.hardware.keymaster@4.0.vendor \
     android.hardware.keymaster@4.1.vendor \
@@ -682,7 +673,6 @@ PRODUCT_PACKAGES += \
     android.system.wifi.keystore@1.0.vendor \
     libstdc++_vendor \
     vendor.qti.hardware.camera.device@1.0.vendor \
-    android.hardware.health.storage@1.0.vendor \
     android.hardware.health@1.0.vendor \
     android.hardware.health@2.0.vendor \
     android.hardware.health@2.1.vendor \
