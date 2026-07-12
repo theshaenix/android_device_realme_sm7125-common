@@ -37,6 +37,12 @@ PRODUCT_PACKAGES += \
 # API
 PRODUCT_SHIPPING_API_LEVEL := 29
 
+# The device shipped with a legacy 4.14 kernel that predates the KFENCE-based
+# kernel requirements in newer framework compatibility matrices. Keep VINTF
+# HAL checks enabled, but do not advertise or enforce unsupported OTA kernel
+# requirements.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+
 # Audio
 PRODUCT_PACKAGES += \
     libvolumelistener
