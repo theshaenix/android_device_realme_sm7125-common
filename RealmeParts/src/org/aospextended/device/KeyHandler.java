@@ -34,6 +34,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemProperties;
+import android.os.UserManager;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.Global;
@@ -80,12 +81,14 @@ public class KeyHandler implements DeviceKeyHandler {
 
     private EventHandler mEventHandler;
 
+    private UserManager mUserManager;
     private Vibrator mVibrator;
 
     public KeyHandler(Context context) {
         mContext = context;
         mEventHandler = new EventHandler();
 
+        mUserManager = context.getSystemService(UserManager.class);
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         mAppContext = Utils.getAppContext(mContext);
@@ -94,6 +97,14 @@ public class KeyHandler implements DeviceKeyHandler {
     private class EventHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
+            // The package preferences live in credential-encrypted storage. A
+            // gesture can arrive before the first unlock and accessing them at
+            // that point kills system_server, causing another boot animation.
+            if (mUserManager == null || !mUserManager.isUserUnlocked()) {
+                if (DEBUG) Slog.d(TAG, "Ignoring gesture before user unlock");
+                return;
+            }
+
             KeyEvent event = (KeyEvent) msg.obj;
             String action = null;
 
