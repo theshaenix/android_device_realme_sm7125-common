@@ -92,6 +92,7 @@ on early-fs
 
 on fs
     start hwservicemanager
+    mkdir /my_custom 0771 system system
     mount_all --early
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
@@ -107,7 +108,6 @@ on late-init
     start surfaceflinger
     start bootanim
     start vendor.hwcomposer-2-4
-    start vendor.configstore-hal
     start vendor.qti.hardware.display.allocator
 
 on post-fs
@@ -117,7 +117,6 @@ on post-fs
 
 on late-fs
     wait_for_prop hwservicemanager.ready true
-    exec_start wait_for_keymaster
     mount_all --late
 
 service sec_nvm /vendor/bin/sec_nvm
@@ -496,4 +495,3 @@ on property:vendor.dcvs.prop=1
 chown system system /sys/bus/platform/devices/soc:fpc1020/irq
 chown system system /sys/bus/platform/devices/soc:fpc1020/irq_enable
 chown system system /sys/bus/platform/devices/soc:fpc1020/wakelock_enable
-
