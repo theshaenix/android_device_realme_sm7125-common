@@ -1,0 +1,2 @@
+# Allow suspend statistics to read the RTC wakeup source.
+r_dir_file(system_suspend, sysfs_rtc)

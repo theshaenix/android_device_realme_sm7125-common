@@ -1197,6 +1197,9 @@ vendor/lib/libsecureui_svcsock.so
 vendor/lib64/libsecureui.so
 vendor/lib64/libsecureui_svcsock.so
 
+# Performance
+vendor/etc/msm_irqbalance.conf
+
 # Thermal
 vendor/bin/thermal-engine
 vendor/etc/init/init_thermal-engine.rc
@@ -1306,4 +1309,3 @@ vendor/lib/libwfduibcsrcinterface_proprietary.so
 vendor/lib/libwfdutils_proprietary.so
 vendor/lib/vendor.qti.hardware.wifidisplaysession@1.0.so
 vendor/lib/vendor.qti.hardware.wifidisplaysessionl@1.0-halimpl.so
-
