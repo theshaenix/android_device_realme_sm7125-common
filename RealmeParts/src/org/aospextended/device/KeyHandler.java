@@ -97,16 +97,29 @@ public class KeyHandler implements DeviceKeyHandler {
     private class EventHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            // The package preferences live in credential-encrypted storage. A
-            // gesture can arrive before the first unlock and accessing them at
-            // that point kills system_server, causing another boot animation.
-            if (mUserManager == null || !mUserManager.isUserUnlocked()) {
-                if (DEBUG) Slog.d(TAG, "Ignoring gesture before user unlock");
-                return;
-            }
-
             KeyEvent event = (KeyEvent) msg.obj;
             String action = null;
+
+            // The package preferences live in credential-encrypted storage. A
+            // gesture can arrive before the first unlock and accessing them at
+            // that point throws and kills system_server, causing another boot
+            // animation. Until the user is unlocked, honour only the wake
+            // gestures with their default action and touch no preferences
+            // (the haptic setting is a preference too).
+            if (mUserManager == null || !mUserManager.isUserUnlocked()) {
+                switch (event.getScanCode()) {
+                case GESTURE_DOUBLE_TAP_SCANCODE:
+                case GESTURE_UP_ARROW_SCANCODE:
+                case GESTURE_SWIPE_UP_SCANCODE:
+                    if (DEBUG) Slog.d(TAG, "Wake gesture before user unlock");
+                    Action.processAction(mContext, Action.ACTION_WAKE_DEVICE, false);
+                    break;
+                default:
+                    if (DEBUG) Slog.d(TAG, "Ignoring gesture before user unlock");
+                    break;
+                }
+                return;
+            }
 
             // Utils.getSharedPreferences does not work here
             SharedPreferences mPref = mAppContext.getSharedPreferences("org.aospextended.device_preferences",

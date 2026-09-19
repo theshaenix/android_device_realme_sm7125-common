@@ -1,1 +1,6 @@
 dontaudit untrusted_app ashmem_device:chr_file open;
+
+# The camera HAL probes system-internal properties (default_prop, system_prop)
+# on every session. Vendor domains may not read core property types (neverallow),
+# the HAL works without them, and the denials only fill the log (~60 per boot).
+dontaudit hal_camera_default { default_prop system_prop }:file r_file_perms;
