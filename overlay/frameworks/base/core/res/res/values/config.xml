@@ -626,4 +626,11 @@
     <!-- Whether WM DisplayContent supports high performance transitions
          (lower-end devices may want to disable) -->
     <bool name="config_deviceSupportsHighPerfTransitions">false</bool>
+    <!-- Cap on cached (background) app processes kept by ActivityManager.
+         AOSP default is 1024, which on this 8GB device left ~300 processes
+         alive after boot and the kernel reclaiming ~14GB in the first five
+         minutes. 64 most-recent cached apps is plenty; ActivityManager trims
+         the rest gracefully in LRU order. Measured: 303 -> 247 processes,
+         memory PSI 27% -> ~1% within two minutes. -->
+    <integer name="config_customizedMaxCachedProcesses">64</integer>
 </resources>
