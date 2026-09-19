@@ -55,6 +55,11 @@ ro.lmk.kill_timeout_ms=1000
 ro.incremental.enable=1
 
 
+# Inherited low-RAM (Android Go) flag that disables HW-accelerated rendering -> forces
+# slow software/CPU paths for window animations and burns battery. Wrong for 8GB/Adreno 618.
+# (Was in vendor.prop, where vendor_init is denied setting it.)
+ro.config.avoid_gfx_accel=false
+
 # Fling
 ro.min.fling_velocity=160
 ro.max.fling_velocity=20000
