@@ -49,7 +49,6 @@ function configure_memory_parameters() {
     
     echo 100 > /proc/sys/vm/swappiness
     echo 100 > /proc/sys/vm/direct_swappiness
-    echo 0 > /proc/sys/vm/page-cluster
 
     # This oneshot can be started in charger mode and again after boot. Never
     # format an active swap device a second time.
@@ -86,7 +85,9 @@ function configure_memory_parameters() {
     # wsf was forced to 1 (laziest reclaim -> kswapd wakes late -> direct-reclaim
     # stalls/jank). Keep the upstream default distance so short-lived allocation
     # bursts do not look like sustained low-memory pressure to userspace lmkd.
-    echo 10 > /proc/sys/vm/watermark_scale_factor
+    # 200 keeps ~350MB free on 8GB instead of ~95MB so allocations stop stalling
+    # in direct reclaim; lmkd's watermark math tracks the kernel's own targets.
+    echo 200 > /proc/sys/vm/watermark_scale_factor
     
     # Configure read-ahead values
     configure_read_ahead_kb_values

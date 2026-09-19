@@ -26,25 +26,30 @@ ro.lmk.kill_heaviest_task=true
 # kernel actually fills zram before lmkd starts killing.
 ro.lmk.swap_free_low_percentage=10
 
-# LMK tuning
+# LMK tuning (AOSP lmkd, Android 16). Only properties the AOSP binary reads are
+# listed; the QTI-only knobs (enable_watermark_check, use_psi, enable_userspace_lmk,
+# super_critical, psi_scrit_complete_stall_ms, direct_reclaim_pressure,
+# reclaim_scan_threshold, enhance_batch_kill) are not read by AOSP lmkd and were dropped.
 ro.lmk.filecache_min_kb=153600
 ro.lmk.stall_limit_critical=40
 ro.lmk.use_new_strategy=true
-ro.lmk.use_psi=true
 ro.lmk.use_minfree_levels=false
 ro.lmk.psi_partial_stall_ms=70
 ro.lmk.psi_complete_stall_ms=700
 ro.lmk.thrashing_limit=100
-# The 4.14 zone/CMA accounting reports short low-watermark dips even with
-# gigabytes of reclaimable cache and free zram. Let PSI drive kills instead.
-ro.lmk.enable_watermark_check=false
-ro.lmk.enable_userspace_lmk=true
-ro.lmk.enhance_batch_kill=false
-ro.lmk.super_critical=701
+# lmkd's fallback path kills a cached app whenever a PSI event arrives while free
+# memory is below the kernel's high watermark, which on this 4.14 kernel is the
+# normal state during any reclaim. 950 is CACHED_APP_LMK_FIRST_ADJ, the line from
+# which ActivityManager marks cached apps as "kill these first": the ~10 most
+# recently used cached apps (adj 900-945) are no longer eligible for that path,
+# older ones still are. Thrashing, low-swap and stall based kills are unaffected.
+# Measured: stock killed 65 apps/3min under load and kept 2-3; 1000 kept
+# everything (106 cached) but thrashed 6GB refaults/5min; 950 culls only the
+# stale tail and pressure settles.
+ro.lmk.lowmem_min_oom_score=950
+# AOSP default is 100; the previous 50 let lmkd kill again before the first
+# victim had released its memory.
 ro.lmk.kill_timeout_ms=1000
-ro.lmk.psi_scrit_complete_stall_ms=700
-ro.lmk.direct_reclaim_pressure=45
-ro.lmk.reclaim_scan_threshold=0
 
 # Incremental FS
 ro.incremental.enable=1

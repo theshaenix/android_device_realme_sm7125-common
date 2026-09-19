@@ -13,6 +13,10 @@ on fs
     mount ext4 /dev/block/mapper/oppo_product /mnt/vendor/oppo_product ro
 
 on boot
+    # ZRAM needs no disk-style swap readahead. vendor_init can write this
+    # node; the post-boot shell domain cannot.
+    write /proc/sys/vm/page-cluster 0
+
     # Disable edge limit control interface
     chmod 0660 /proc/touchpanel/oplus_tp_limit_enable
     chmod 0660 /proc/touchpanel/oplus_tp_direction
