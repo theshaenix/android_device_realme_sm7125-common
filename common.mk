@@ -460,7 +460,7 @@ PRODUCT_PACKAGES += \
 
 # Thermal
 PRODUCT_PACKAGES += \
-    android.hardware.thermal-service.qti
+    android.hardware.thermal-service.realme_sm7125
 
 # Touchscreen
 PRODUCT_COPY_FILES += \
