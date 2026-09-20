@@ -488,14 +488,6 @@ on property:persist.vendor.ssr.enable_ramdumps=1
 on property:persist.vendor.ssr.enable_ramdumps=0
     write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
 
-#ifdef OPLUS_BUG_STABILITY
-#YiMin@CONNECTIVITY.WIFI.INTERNET.Production.1065227, 2017/11/21,Add for  :start init.oppo.wifi.sh
-service wifiserver /odm/bin/init.oppo.wifi.sh
-    class core
-    user root
-    oneshot
-#endif OPLUS_BUG_STABILITY
-
 on property:persist.vendor.sys.rawdump_copy=1
     write /sys/kernel/dload/emmc_dload 1
 
@@ -922,15 +914,6 @@ service bugreport /system/bin/dumpstate -d -p -B -z -o /data/user_de/0/com.andro
     oneshot
     keycodes 114 115 116
 
-#ifdef VENDOR_EDIT
-#man.wang@Camera for Laser daemon, 2020/10/23
-service vl53l1_daemon_main /odm/bin/vl53l1_daemon_main
-    class late_start
-    user root
-    group root
-    socket vl53l1_daemon stream 660 root system
-#endif
-
 #Set GPU Opengles version
 on property:vendor.opengles.version=*
     setprop ro.opengles.version ${vendor.opengles.version}
@@ -1008,15 +991,6 @@ service wifitestdiag /odm/bin/wifi_diag
 on property:sys.usb.config=diag,adb && property:sys.usb.configfs=1
     start wifitestdiag
 #endif /* OPLUS_FEATURE_WIFI_FTM */
-#ifdef VENDOR_EDIT
-#Liuchen@CONNECTIVITY.WIFI.BASIC.HARDWARE.484186, 2020/10/17
-#Add for : Wifi BDF version
-service WifibdfVersion /odm/bin/vendor.autochmod.sh "WifibdfVersion"
-    class late_start
-    user root
-    group root
-    oneshot
-#endif /* VENDOR_EDIT */
 
 service vendor.hwcomposer-2-4 /vendor/bin/hw/android.hardware.graphics.composer@2.4-service
     override
