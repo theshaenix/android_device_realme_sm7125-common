@@ -28,6 +28,9 @@ SECTION=
 
 while [ "${#}" -gt 0 ]; do
     case "${1}" in
+        vendor/lib64/libril-qc-hal-qmi.so)
+            python3 "${MY_DIR}/tools/fix-ril-hotswap.py" "${2}"
+            ;;
         --only-common )
                 ONLY_COMMON=true
                 ;;
