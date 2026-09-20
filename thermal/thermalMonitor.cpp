@@ -43,26 +43,9 @@ SPDX-License-Identifier: BSD-3-Clause-Clear */
 #include <android-base/stringprintf.h>
 
 #include "thermalMonitor.h"
+#include "Uevent.h"
 
 #define UEVENT_BUF 1024
-
-#define HYST_FMT "change@/devices/virtual/thermal/thermal_zone%d\n\
-    ACTION=change\n\
-    DEVPATH=/devices/virtual/thermal/thermal_zone%d\n\
-    SUBSYSTEM=thermal\n\
-    NAME=%s\n\
-    TEMP=%d\n\
-    HYST=%d\n\
-    EVENT=%d\n"\
-
-#define TRIP_FMT "change@/devices/virtual/thermal/thermal_zone%d\n\
-    ACTION=change\n\
-    DEVPATH=/devices/virtual/thermal/thermal_zone%d\n\
-    SUBSYSTEM=thermal\n\
-    NAME=%s\n\
-    TEMP=%d\n\
-    TRIP=%d\n\
-    EVENT=%d\n"\
 
 namespace aidl {
 namespace android {
@@ -149,44 +132,10 @@ void ThermalMonitor::start()
 
 void ThermalMonitor::parse_and_notify(char *inp_buf, ssize_t len)
 {
-    int zone_num, temp, trip, ret = 0, event;
-    ssize_t i = 0;
-    char sensor_name[30] = "", buf[UEVENT_BUF] = {0};
-
-    LOG(DEBUG) << "monitor received thermal uevent: " << inp_buf
-        << std::endl;
-
-    while (i < len) {
-        if (i >= UEVENT_BUF)
-            return;
-        ret = snprintf(buf + i, UEVENT_BUF - i, "%s ", inp_buf + i);
-        if (ret == (strlen(inp_buf + i) + 1))
-            i += ret;
-        else
-            return;
-    }
-
-    if (!strstr(buf, "SUBSYSTEM=thermal"))
-        return;
-
-    if (strstr(buf, "TRIP=")) {
-        ret = sscanf(buf, TRIP_FMT, &zone_num, &zone_num, sensor_name,
-            &temp, &trip, &event);
-        LOG(DEBUG) << "zone:" << zone_num << " sensor:" << sensor_name
-               <<" temp:" << temp << " trip:" << trip << " event:" <<
-               event << std::endl;
-    } else {
-        ret = sscanf(buf, HYST_FMT, &zone_num, &zone_num, sensor_name,
-            &temp, &trip, &event);
-        LOG(DEBUG) << "zone:" << zone_num << " sensor:" << sensor_name
-               <<" temp:" << temp << " trip:" << trip << " event:" <<
-               event << std::endl;
-    }
-    if (ret <= 0 || ret == EOF) {
-        LOG(ERROR) << "read error:" << ret <<". buf:" << buf << std::endl;
-        return;
-    }
-    cb(sensor_name, temp);
+    if (!inp_buf || len <= 0) return;
+    const auto parsed = parseThermalUevent(
+            std::string_view(inp_buf, static_cast<size_t>(len)));
+    if (parsed) cb(parsed->first, parsed->second);
 }
 
 }  // namespace thermal
