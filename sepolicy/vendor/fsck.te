@@ -6,5 +6,8 @@ allow fsck block_device:blk_file { ioctl };
 allow fsck self:capability kill;
 allow fsck vendor_modem_efs_partition_device:blk_file { open read };
 
-# e2fsck looks up the /mnt/vendor/opporeserve mount point while checking it
-allow fsck mnt_vendor_file:dir search;
+# e2fsck stats mount points from /proc/mounts to see whether the checked fs
+# is mounted, which trips a search on /mnt/vendor. fsck is a coredomain and
+# system/sepolicy neverallows coredomain access to mnt_vendor_file:dir, so
+# this cannot be allowed from vendor policy; silence the harmless denial.
+dontaudit fsck mnt_vendor_file:dir search;
