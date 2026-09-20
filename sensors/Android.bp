@@ -1,0 +1,9 @@
+cc_library_shared {
+    name: "sensors.realme_sm7125",
+    vendor: true,
+    defaults: ["android.hardware.sensors@2.X-multihal-defaults"],
+    srcs: ["SubHal.cpp"],
+    shared_libs: ["libdl"],
+    cpp_std: "c++17",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

@@ -54,13 +54,6 @@ ro.lmk.kill_timeout_ms=1000
 ro.incremental.enable=1
 
 
-# Sensors: the BMI160 accel/gyro run in polling mode on the sensor core (their
-# "data-ready" GPIO 86 is the touch panel SPI clock on this board). The core only
-# reads the FIFO for batch requests of more than one sample, so sensorservice
-# (patched, see patches/frameworks_native) turns maxReportLatency=0 into 1.5x the
-# sampling period. Without the patch the property is ignored.
-ro.sensors.polling_fifo_workaround=1
-
 # Inherited low-RAM (Android Go) flag that disables HW-accelerated rendering -> forces
 # slow software/CPU paths for window animations and burns battery. Wrong for 8GB/Adreno 618.
 # (Was in vendor.prop, where vendor_init is denied setting it.)
