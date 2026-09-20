@@ -71,8 +71,6 @@ static int process_interaction_hint(void* data) {
     if (elapsed_time < 250000 && duration <= 750) {
         return HINT_HANDLED;
     }
-    s_previous_boost_timespec = cur_boost_timespec;
-    s_previous_duration = duration;
 
     if (CHECK_HANDLE(interaction_handle)) {
         release_request(interaction_handle);
@@ -84,6 +82,8 @@ static int process_interaction_hint(void* data) {
         ALOGE("Failed to perform interaction boost");
         return HINT_NONE;
     }
+    s_previous_boost_timespec = cur_boost_timespec;
+    s_previous_duration = duration;
     return HINT_HANDLED;
 }
 }
@@ -112,8 +112,7 @@ bool isDeviceSpecificBoostSupported(Boost type, bool *_aidl_return) {
 bool setDeviceSpecificBoost(Boost type, int32_t durationMs) {
     switch (type) {
         case Boost::INTERACTION:
-            process_interaction_hint(&durationMs);
-            return true;
+            return process_interaction_hint(&durationMs) == HINT_HANDLED;
         default:
             return false;
     }

@@ -50,6 +50,7 @@ static int process_activity_launch_hint(void* data) {
 
     // release lock early if launch has finished
     if (!enabled) {
+        if (!launch_mode) return HINT_NONE;
         if (CHECK_HANDLE(launch_handle)) {
             release_request(launch_handle);
             launch_handle = -1;
@@ -94,8 +95,7 @@ bool isDeviceSpecificModeSupported(Mode type, bool *_aidl_return) {
 bool setDeviceSpecificMode(Mode type, bool enabled) {
     switch (type) {
         case Mode::LAUNCH:
-            process_activity_launch_hint(&enabled);
-            return true;
+            return process_activity_launch_hint(&enabled) == HINT_HANDLED;
         default:
             return false;
     }
