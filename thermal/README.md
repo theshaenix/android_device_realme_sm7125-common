@@ -30,6 +30,20 @@ Build in the ROM checkout:
 m android.hardware.thermal-service.realme_sm7125
 ```
 
+Host regression checks (Clang, Python 3; ASan/UBSan enabled):
+
+```sh
+python3 thermal/tests/test_monitor.py
+python3 thermal/tests/test_reads.py
+```
+
+The monitor check runs its production worker against a socketpair instead
+of Linux netlink. It covers an unstarted worker, blocked shutdown, repeated
+stop, socket cleanup and socket creation failure. The read check exercises
+production file/temperature/cooling reads and the SoC retry loop with missing,
+empty and malformed inputs. These checks do not replace a full Android HAL
+build or on-device thermal-event and shutdown tests.
+
 After flashing, check `dumpsys thermalservice` for real CPU/GPU/skin readings
 and threshold entries, and check logcat for sensor initialization failures
 and SELinux denials. Reporting and callbacks still require device validation;

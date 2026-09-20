@@ -65,9 +65,12 @@ ThermalUtils::ThermalUtils(const ueventCB &inp_cb):
         sensorList = cmnInst.fetch_sensor_list();
         std::lock_guard<std::mutex> _lock(sens_cb_mutex);
         for (struct therm_sensor sens: sensorList) {
-            cmnInst.read_temperature(sens);
-            cmnInst.estimateSeverity(sens);
-            cmnInst.initThreshold(sens);
+            if (cmnInst.read_temperature(sens) > 0) {
+                cmnInst.estimateSeverity(sens);
+                cmnInst.initThreshold(sens);
+            } else {
+                sens.t.value = UNKNOWN_TEMPERATURE;
+            }
             thermalConfig[sens.sensor_name] = sens;
         }
         monitor.start();

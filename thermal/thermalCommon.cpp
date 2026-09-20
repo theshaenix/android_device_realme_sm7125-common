@@ -34,6 +34,8 @@ Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
 SPDX-License-Identifier: BSD-3-Clause-Clear */
 
 #include <cstdio>
+#include <cerrno>
+#include <stdexcept>
 #include <cinttypes>
 #include <string>
 #include <dirent.h>
@@ -158,9 +160,10 @@ static int readLineFromFile(std::string_view path, std::string& out)
 
     fd = fopen(std::string(path).c_str(), "r");
     if (fd == NULL) {
+        const int error = errno;
         LOG(ERROR) << "Path:" << std::string(path) << " file open error.err:"
             << strerror(errno) << std::endl;
-        return errno;
+        return -error;
     }
 
     fgets_ret = fgets(buf, MAX_LENGTH, fd);
@@ -168,7 +171,7 @@ static int readLineFromFile(std::string_view path, std::string& out)
         rv = (int)strlen(buf);
         out.append(buf, rv);
     } else {
-        rv = ferror(fd);
+        rv = ferror(fd) ? -EIO : 0;
     }
 
     fclose(fd);
@@ -420,7 +423,11 @@ int ThermalCommon::read_cdev_state(struct therm_cdev& cdev)
             return -1;
         }
         try {
-            cdev.c.value = std::stoi(buf, nullptr, 0);
+            size_t end = 0;
+            const int value = std::stoi(buf, &end, 0);
+            if (end != buf.size() || value < 0)
+                throw std::invalid_argument("invalid cooling state");
+            cdev.c.value = value;
             read_ok = true;
         }
         catch (std::exception &err) {
@@ -431,6 +438,7 @@ int ThermalCommon::read_cdev_state(struct therm_cdev& cdev)
         }
         ct++;
     } while (!read_ok && ct < RETRY_CT);
+    if (!read_ok) return -EINVAL;
     LOG(DEBUG) << "cdev Name:" << cdev.c.name << ". state:" <<
         cdev.c.value << std::endl;
 
@@ -527,8 +535,11 @@ int ThermalCommon::read_temperature(struct therm_sensor& sensor)
             return -1;
         }
         try {
-            sensor.t.value = (float)std::stoi(buf, nullptr, 0) /
-                 (float)sensor.mulFactor;
+            size_t end = 0;
+            const int value = std::stoi(buf, &end, 0);
+            if (end != buf.size() || sensor.mulFactor <= 0)
+                throw std::invalid_argument("invalid temperature or scale");
+            sensor.t.value = (float)value / (float)sensor.mulFactor;
             read_ok = true;
         }
         catch (std::exception &err) {
@@ -540,6 +551,7 @@ int ThermalCommon::read_temperature(struct therm_sensor& sensor)
         }
         ct++;
     } while (!read_ok && ct < RETRY_CT);
+    if (!read_ok) return -EINVAL;
     LOG(DEBUG) << "Sensor Name:" << sensor.t.name << ". Temperature:" <<
         (float)sensor.t.value << std::endl;
 

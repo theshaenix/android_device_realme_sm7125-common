@@ -38,6 +38,7 @@ Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
 SPDX-License-Identifier: BSD-3-Clause-Clear */
 
 #include <unordered_map>
+#include <stdexcept>
 #include <android-base/logging.h>
 #include <aidl/android/hardware/thermal/BnThermal.h>
 #include <utility>
@@ -2849,9 +2850,10 @@ std::vector<std::string> cpu_sensors_cliffs = {
 
         soc_id = 0;
         do {
+            ++ct;
             if (cmnInst.readFromFile(socIDPath, soc_val) <= 0) {
                 LOG(ERROR) <<"soc ID fetch error";
-                return;
+                continue;
             }
 
             if (cmnInst.readFromFile(hwPlatformPath, hw_platform) <= 0) {
@@ -2860,14 +2862,18 @@ std::vector<std::string> cpu_sensors_cliffs = {
             }
 
             try {
-                soc_id = std::stoi(soc_val, nullptr, 0);
+                size_t end = 0;
+                const int value = std::stoi(soc_val, &end, 0);
+                if (end != soc_val.size() || value <= 0)
+                    throw std::invalid_argument("invalid SoC ID");
+                soc_id = value;
                 read_ok = true;
             }
             catch (std::exception &err) {
                 LOG(ERROR) <<"soc id stoi err:" << err.what()
                     << " buf:" << soc_val;
             }
-        } while (ct++ && !read_ok && ct < RETRY_CT);
+        } while (!read_ok && ct < RETRY_CT);
         if (soc_id <= 0) {
             LOG(ERROR) << "Invalid soc ID: " << soc_id;
             return;
