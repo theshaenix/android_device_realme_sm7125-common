@@ -1,11 +1,10 @@
 // Device-owned QTI thermal HAL for the SM7125 4.14 kernel.
 cc_binary {
     name: "android.hardware.thermal-service.realme_sm7125",
-    stem: "android.hardware.thermal-service.qti",
     overrides: ["android.hardware.thermal-service.qti"],
     relative_install_path: "hw",
-    init_rc: ["android.hardware.thermal-service.qti.rc"],
-    vintf_fragments: ["android.hardware.thermal-service.qti.xml"],
+    init_rc: ["android.hardware.thermal-service.realme_sm7125.rc"],
+    vintf_fragments: ["android.hardware.thermal-service.realme_sm7125.xml"],
     vendor: true,
     shared_libs: [
         "libbase",

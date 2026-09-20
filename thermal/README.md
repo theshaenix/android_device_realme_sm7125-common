@@ -15,8 +15,10 @@ Local differences:
 - Initialize the limit-profile value for SoCs without a profile override.
 - Keep the next-trip sentinel as a float so NaN remains representable;
   convert to an integer only when writing a valid trip to sysfs.
-- Select a uniquely named build module while retaining the original binary
-  filename, service name, and VINTF instance for existing SELinux policy.
+- Use unique module, executable, init RC, and VINTF fragment filenames so
+  Soong does not generate duplicate outputs alongside the QTI module.
+  Override the QTI package while retaining the service name and VINTF instance;
+  label the new executable with the existing thermal HAL SELinux type.
 
 The vendor thermal-engine and kernel thermal protection remain responsible
 for their existing mitigation policies. This is not new thermal calibration:
