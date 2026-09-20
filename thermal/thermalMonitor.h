@@ -37,7 +37,9 @@ SPDX-License-Identifier: BSD-3-Clause-Clear */
 #define THERMAL_THERMAL_MONITOR_H__
 
 #include <thread>
-#include <aidl/android/hardware/thermal/BnThermal.h>
+#include <functional>
+#include <string>
+#include <sys/types.h>
 
 namespace aidl {
 namespace android {
@@ -52,14 +54,11 @@ class ThermalMonitor {
         ~ThermalMonitor();
 
         void parse_and_notify(char *inp_buf, ssize_t len);
-        bool stopPolling()
-        {
-            return monitor_shutdown;
-        }
         void start();
+        void stop();
     private:
         std::thread th;
-        bool monitor_shutdown;
+        int stop_fds[2] = {-1, -1};
         ueventMonitorCB cb;
 };
 

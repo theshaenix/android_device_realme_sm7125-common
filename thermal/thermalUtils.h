@@ -55,7 +55,8 @@ using ueventCB = std::function<void(Temperature &t)>;
 class ThermalUtils {
     public:
         ThermalUtils(const ueventCB &inp_cb);
-        ~ThermalUtils() = default;
+        // Stop callbacks before any of their state or locks are destroyed.
+        ~ThermalUtils() { monitor.stop(); }
         bool isCdevInitialized()
         {
             return is_cdev_init;

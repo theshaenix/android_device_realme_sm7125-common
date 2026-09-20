@@ -34,6 +34,9 @@ Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 SPDX-License-Identifier: BSD-3-Clause-Clear */
 
 #include <unistd.h>
+#include <fcntl.h>
+#include <cerrno>
+#include <cstring>
 #include <poll.h>
 #include <sys/socket.h>
 #include <linux/types.h>
@@ -53,9 +56,7 @@ namespace hardware {
 namespace thermal {
 
 using parseCB = std::function<void(char *inp_buf, ssize_t len)>;
-using pollCB = std::function<bool()>;
-
-void thermal_monitor_uevent(const parseCB &parse_cb, const pollCB &stopPollCB)
+void thermal_monitor_uevent(const parseCB &parse_cb, int stopFd)
 {
     struct pollfd pfd;
     char buf[UEVENT_BUF] = {0};
@@ -84,19 +85,24 @@ void thermal_monitor_uevent(const parseCB &parse_cb, const pollCB &stopPollCB)
     }
     LOG(DEBUG) << "Listening for uevent" << std::endl;
 
-    while (!stopPollCB()) {
+    struct pollfd fds[2] = {{pfd.fd, POLLIN, 0}, {stopFd, POLLIN, 0}};
+    while (true) {
         ssize_t len;
         int err;
 
-        err = poll(&pfd, 1, -1);
+        err = poll(fds, 2, -1);
         if (err == -1) {
+            if (errno == EINTR) continue;
             LOG(ERROR) << "Error in uevent poll.";
             break;
         }
-        if (stopPollCB()) {
+        if (fds[1].revents) {
             LOG(INFO) << "Exiting uevent monitor" << std::endl;
-            return;
+            break;
         }
+        if (fds[0].revents & (POLLHUP | POLLNVAL)) break;
+        // recv reports recoverable netlink errors such as ENOBUFS.
+        if (!(fds[0].revents & (POLLIN | POLLERR))) continue;
         len = recv(pfd.fd, buf, sizeof(buf) - 1, MSG_DONTWAIT);
         if (len == -1) {
             LOG(ERROR) << "uevent read failed:" << errno << std::endl;
@@ -107,27 +113,55 @@ void thermal_monitor_uevent(const parseCB &parse_cb, const pollCB &stopPollCB)
         parse_cb(buf, len);
     }
 
-    return;
+    close(pfd.fd);
 }
 
 ThermalMonitor::ThermalMonitor(const ueventMonitorCB &inp_cb):
     cb(inp_cb)
 {
-    monitor_shutdown = false;
 }
 
 ThermalMonitor::~ThermalMonitor()
 {
-    monitor_shutdown = true;
+    stop();
+}
+
+void ThermalMonitor::stop()
+{
+    if (!th.joinable()) return;
+    const char wake = 1;
+    while (write(stop_fds[1], &wake, sizeof(wake)) < 0 && errno == EINTR) {}
     th.join();
+    close(stop_fds[0]);
+    close(stop_fds[1]);
+    stop_fds[0] = stop_fds[1] = -1;
 }
 
 void ThermalMonitor::start()
 {
-    th = std::thread(thermal_monitor_uevent,
-        std::bind(&ThermalMonitor::parse_and_notify, this,
-            std::placeholders::_1, std::placeholders::_2),
-        std::bind(&ThermalMonitor::stopPolling, this));
+    if (th.joinable()) return;
+    if (pipe(stop_fds) < 0) {
+        LOG(ERROR) << "Unable to create thermal shutdown pipe: " << errno;
+        return;
+    }
+    if (fcntl(stop_fds[0], F_SETFD, FD_CLOEXEC) < 0 ||
+        fcntl(stop_fds[1], F_SETFD, FD_CLOEXEC) < 0) {
+        close(stop_fds[0]);
+        close(stop_fds[1]);
+        stop_fds[0] = stop_fds[1] = -1;
+        return;
+    }
+    try {
+        th = std::thread(thermal_monitor_uevent,
+            std::bind(&ThermalMonitor::parse_and_notify, this,
+                std::placeholders::_1, std::placeholders::_2),
+            stop_fds[0]);
+    } catch (...) {
+        close(stop_fds[0]);
+        close(stop_fds[1]);
+        stop_fds[0] = stop_fds[1] = -1;
+        throw;
+    }
 }
 
 void ThermalMonitor::parse_and_notify(char *inp_buf, ssize_t len)
