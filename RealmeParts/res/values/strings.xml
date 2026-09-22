@@ -195,4 +195,11 @@
     <string name="charge_limit_level_title">Charge limit level</string>
     <string name="charge_limit_level_summary">Charging pauses at this level and resumes if it drops below it</string>
 
+    <!-- Touchscreen modes (OPLUS touch driver, /proc/touchpanel) -->
+    <string name="touchscreen_title">Touchscreen</string>
+    <string name="game_mode_title">Game touch mode</string>
+    <string name="game_mode_summary">Higher touch report rate and lighter jitter filtering for lower input latency in games (small battery cost)</string>
+    <string name="glove_mode_title">Glove mode</string>
+    <string name="glove_mode_summary">Increase touch sensitivity for gloves or thick screen protectors</string>
+
 </resources>

@@ -36,6 +36,7 @@ import org.aospextended.device.vibration.VibratorStrengthPreference;
 import org.aospextended.device.gpu.GpuBoostSettings;
 import org.aospextended.device.battery.ChargeLimitSettings;
 import org.aospextended.device.battery.ChargeLimitService;
+import org.aospextended.device.touch.TouchModeSettings;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -64,6 +65,8 @@ public class RealmeParts extends PreferenceFragmentCompat implements
     private ListPreference mGpuBoost;
     private SwitchPreference mChargeLimitEnable;
     private ListPreference mChargeLimitLevel;
+    private SwitchPreference mGameMode;
+    private SwitchPreference mGloveMode;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -108,6 +111,24 @@ public class RealmeParts extends PreferenceFragmentCompat implements
             getPreferenceScreen().removePreference(performance);
         }
 
+        PreferenceCategory touchscreen = (PreferenceCategory) getPreferenceScreen()
+                 .findPreference("touchscreen_category");
+        mGameMode = (SwitchPreference) findPreference(TouchModeSettings.KEY_GAME_MODE);
+        mGloveMode = (SwitchPreference) findPreference(TouchModeSettings.KEY_GLOVE_MODE);
+        if (TouchModeSettings.isGameModeSupported()) {
+            mGameMode.setOnPreferenceChangeListener(this);
+        } else if (touchscreen != null) {
+            touchscreen.removePreference(mGameMode);
+        }
+        if (TouchModeSettings.isGloveModeSupported()) {
+            mGloveMode.setOnPreferenceChangeListener(this);
+        } else if (touchscreen != null) {
+            touchscreen.removePreference(mGloveMode);
+        }
+        if (touchscreen != null && touchscreen.getPreferenceCount() == 0) {
+            getPreferenceScreen().removePreference(touchscreen);
+        }
+
         PreferenceCategory battery = (PreferenceCategory) getPreferenceScreen()
                  .findPreference("battery_category");
         mChargeLimitEnable = (SwitchPreference) findPreference(ChargeLimitSettings.KEY_ENABLE);
@@ -136,6 +157,19 @@ public class RealmeParts extends PreferenceFragmentCompat implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // The Quick Settings tiles flip the same preferences behind our back;
+        // re-read them so the switches match when the user comes back here.
+        if (mGameMode != null && TouchModeSettings.isGameModeSupported()) {
+            mGameMode.setChecked(TouchModeSettings.isGameModeEnabled(getContext()));
+        }
+        if (mGloveMode != null && TouchModeSettings.isGloveModeSupported()) {
+            mGloveMode.setChecked(TouchModeSettings.isGloveModeEnabled(getContext()));
+        }
+    }
+
+    @Override
     public boolean onPreferenceTreeClick(Preference preference) {
         return super.onPreferenceTreeClick(preference);
     }
@@ -149,6 +183,10 @@ public class RealmeParts extends PreferenceFragmentCompat implements
             GpuBoostSettings.setValue((String) newValue);
         } else if (ChargeLimitSettings.KEY_ENABLE.equals(key)) {
             ChargeLimitSettings.onEnableChanged(getContext(), (Boolean) newValue);
+        } else if (TouchModeSettings.KEY_GAME_MODE.equals(key)) {
+            TouchModeSettings.setGameModeEnabled(getContext(), (Boolean) newValue);
+        } else if (TouchModeSettings.KEY_GLOVE_MODE.equals(key)) {
+            TouchModeSettings.setGloveModeEnabled(getContext(), (Boolean) newValue);
         } else if (ChargeLimitSettings.KEY_LEVEL.equals(key)) {
             final String value = (String) newValue;
             // Persist now (the framework persists only after we return) so the
